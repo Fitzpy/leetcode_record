@@ -28,4 +28,31 @@ public:
     }
 };
 ```
+## 106. 从中序与后序遍历序列构造二叉树
 
+```
+class Solution {
+public:
+    TreeNode *calTree(vector<int> &inorder, vector<int> &postorder,
+                      int inoLeft, int inoRight, int postLeft, int postRight) {
+        if (postLeft > postRight) return NULL;
+        int pos = mp[postorder[postRight]];
+        int len = pos - inoLeft;
+        TreeNode *node = new TreeNode(postorder[postRight]);
+        node->left = calTree(inorder, postorder, inoLeft, pos - 1, postLeft, postLeft + len - 1);
+        node->right = calTree(inorder, postorder, pos + 1, inoRight, postLeft + len, postRight - 1);
+        return node;
+    }
+
+    unordered_map<int, int> mp;
+
+    TreeNode *buildTree(vector<int> &inorder, vector<int> &postorder) {
+        int n = inorder.size();
+        mp.clear();
+        for (int i = 0; i < n; i++) {
+            mp[inorder[i]] = i;
+        }
+        return calTree(inorder, postorder, 0, n - 1, 0, n - 1);
+    }
+};
+```
