@@ -157,6 +157,29 @@ public:
 private:
     int top, heap[100010];
 };
+
+class Solution {
+public:
+    void quick_sort(vector<int> &nums, int L, int R) {
+        if (L >= R) return;
+        int i = L, j = R, x = nums[L];
+        while (i < j) {
+            while (i < j && x <= nums[j]) j--;
+            if (i < j) nums[i++] = nums[j];
+            while (i < j && x >= nums[i]) i++;
+            if (i < j) nums[j--] = nums[i];
+        }
+        nums[i] = x;
+        quick_sort(nums, L, i - 1);
+        quick_sort(nums, i + 1, R);
+    }
+
+    vector<int> sortArray(vector<int> &nums) {
+        quick_sort(nums, 0, nums.size() - 1);
+        return nums;
+    }
+
+};
 ```
 
 ## 54. 螺旋矩阵
@@ -232,12 +255,57 @@ public:
 };
 ```
 
-1 auto实现，Lambda为啥出现，原理是什么，为什么是用匿名类实现
-2 多态，为啥要用指针实现多态
-3 为啥要2MSL
-4 GO调度器
-5 epoll的LT和ET有何区别，ET相比LT有什么好处
-6 mysql索引，为啥用B+树，好处是什么
-7 LRU
+## 8. 字符串转换整数 (atoi)
+```
+class Solution {
+public:
+    int myAtoi(string str) {
+        int len = str.size();
+        int pos = 0;
+        while (str[pos] == ' ') pos++;
+        long long maxx = ((long long) 1 << 31) - 1, minn = -((long long) 1 << 31);
+        if (str[pos] == '+' || str[pos] == '-') {
+            long long ans = 0;
+            for (int i = pos + 1; i < len; i++) {
+                if (str[i] >= '0' && str[i] <= '9') ans = ans * 10 + str[i] - '0';
+                else {
+                    if (str[pos] == '+') {
+                        return int(min(ans, maxx));
+                    }
+                    if (str[pos] == '-') {
+                        return int(max(-ans, minn));
+                    }
+                }
+                if (str[pos] == '+' && ans >= maxx) {
+                    return int(min(ans, maxx));
+                }
+                if (str[pos] == '-' && ans >= -minn) {
+                    return int(max(-ans, minn));
+                }
+            }
+            if (str[pos] == '+') {
+                return int(min(ans, maxx));
+            }
+            if (str[pos] == '-') {
+                return int(max(-ans, minn));
+            }
+        } else if (str[pos] >= '0' && str[pos] <= '9') {
+            long long ans = 0;
+            for (int i = pos; i < len; i++) {
+                if (str[i] >= '0' && str[i] <= '9') ans = ans * 10 + str[i] - '0';
+                else {
+                    return int(min(ans, maxx));
+                }
+                if (ans >= maxx) {
+                    return int(min(ans, maxx));
+                }
+            }
+            return int(min(ans, maxx));
+        } else {
+            return 0;
+        }
+        return 0;
+    }
+} ;
+```
 
- 
