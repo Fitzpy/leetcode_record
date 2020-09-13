@@ -309,3 +309,46 @@ public:
 } ;
 ```
 
+## 93. 复原IP地址
+```
+class Solution {
+public:
+    int check(string &s, int L, int R) {
+        int len = R - L + 1;
+        if (len == 0) return 0;
+        if (len == 1 && s[L] == '0') return 1;
+        int flag = 0, ans = 0;
+        for (int i = L; i <= R; i++) {
+            if (s[i] == '0' && flag == 0) return 0;
+            if (s[i] != '0' && flag == 0) flag = 1;
+            ans = ans * 10 + s[i] - '0';
+            if (ans > 255) return 0;
+        }
+        return 1;
+    }
+
+    vector<string> restoreIpAddresses(string s) {
+        int len = s.size();
+        string s1, s2, s3, s4;
+        vector<string> ret;
+        for (int i = 0; i < len - 3; i++) {
+            if (!check(s, 0, i)) continue;
+            for (int j = i + 1; j < len - 2; ++j) {
+                if (!check(s, i + 1, j)) continue;
+                for (int k = j + 1; k < len - 1; ++k) {
+                    if (check(s, j + 1, k) && check(s, k + 1, len - 1)) {
+                        s1 = s.substr(0, i + 1);
+                        s2 = s.substr(i + 1, j - i);
+                        s3 = s.substr(j + 1, k - j);
+                        s4 = s.substr(k + 1, len - k);
+                        cout << s1 << " " << s2 << " " << s3 << " " << s4 << endl;
+                        string ans = (s1 + "." + s2 + "." + s3 + "." + s4);
+                        ret.push_back(ans);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+} solve;
+```
