@@ -2,32 +2,40 @@
 
 using namespace std;
 
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
 class Solution {
 public:
-    int ans;
-
-    int depth(TreeNode *root) {
-        if (root == NULL) return 0;
-        int L = depth(root->left);
-        int R = depth(root->right);
-        ans = max(ans, L + R + 1);
-        return max(L, R) + 1;
+    Solution(vector<int>& nums) {
+        v = nums;
+        ans = nums;
     }
 
-    int diameterOfBinaryTree(TreeNode *root) {
-        ans = 1;
-        depth(root);
-        return ans-1;
+    /** Resets the array to its original configuration and return it. */
+    vector<int> reset() {
+        ans = v;
+        return ans;
     }
+
+    /** Returns a random shuffling of the array. */
+    vector<int> shuffle() {
+        int len = ans.size();
+        for (int i=0 ;i<len ;i++){
+            int idx = rand()%(i+1);
+            swap(ans[i],ans[idx]);
+        }
+        return ans;
+    }
+
+private:
+    vector<int>v;
+    vector<int>ans;
 };
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(nums);
+ * vector<int> param_1 = obj->reset();
+ * vector<int> param_2 = obj->shuffle();
+ */
 
 int main() {
     return 0;
