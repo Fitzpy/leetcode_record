@@ -499,3 +499,27 @@ public:
 };
 ```
 
+## 145. 二叉树的后序遍历
+```
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int>ans;
+        stack<TreeNode*>st;
+        TreeNode * cur = root;
+        while(cur !=NULL || !st.empty()) {
+            while(cur!=NULL){
+                ans.push_back(cur->val);
+                st.push(cur);
+                cur = cur ->right;
+            }
+            cur = st.top();
+            st.pop();
+            cur = cur ->left;
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+};
+```
+
