@@ -20,19 +20,18 @@ struct ListNode {
 
 class Solution {
 public:
-
-    vector<int> inorderTraversal(TreeNode *root) {
-        TreeNode *cur = root;
-        vector<int> ans;
+    vector<int> preorderTraversal(TreeNode *root) {
         stack<TreeNode *> st;
-        while (cur != NULL || !st.empty()) {
+        vector<int> ans;
+        TreeNode *cur = root;
+        while (cur != NULL && !st.empty()) {
             while (cur != NULL) {
+                ans.push_back(cur->val);
                 st.push(cur);
                 cur = cur->left;
             }
             cur = st.top();
             st.pop();
-            ans.push_back(cur->val);
             cur = cur->right;
         }
         return ans;
