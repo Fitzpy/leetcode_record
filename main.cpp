@@ -2,15 +2,6 @@
 
 using namespace std;
 
-
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
 struct ListNode {
     int val;
     ListNode *next;
@@ -20,25 +11,21 @@ struct ListNode {
 
 class Solution {
 public:
-    static bool cmp(string &s1, string &s2) {
-        return s1 + s2 < s2 + s1;
-    }
-
-    string minNumber(vector<int> &nums) {
-        vector<string> ans;
-        for (int i = 0; i < nums.size(); i++) {
-            string s = to_string(nums[i]);
-            ans.push_back(s);
+    bool hasCycle(ListNode *head) {
+        unordered_map<ListNode *, int> mp;
+        while (head != NULL) {
+            if (mp.count(head)) {
+                return true;
+            } else {
+                mp[head] = 1;
+                head = head->next;
+            }
         }
-        sort(ans.begin(), ans.end(), cmp);
-        string ret;
-        for (int i = 0; i < ans.size(); i++) {
-            ret += ans[i];
-        }
-        return ret;
+        return false;
     }
 };
 
 int main() {
+
     return 0;
 }

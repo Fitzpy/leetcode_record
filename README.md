@@ -611,3 +611,22 @@ public:
     }
 };
 ```
+
+## 141. 环形链表
+```
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        unordered_map<ListNode *, int> mp;
+        while (head != NULL) {
+            if (mp.count(head)) {
+                return true;
+            } else {
+                mp[head] = 1;
+                head = head->next;
+            }
+        }
+        return false;
+    }
+};
+```
