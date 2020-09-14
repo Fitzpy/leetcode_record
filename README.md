@@ -588,3 +588,26 @@ public:
     }
 };
 ```
+## 剑指 Offer 45. 把数组排成最小的数
+```
+class Solution {
+public:
+    static bool cmp(string &s1, string &s2) {
+        return s1 + s2 < s2 + s1;
+    }
+
+    string minNumber(vector<int> &nums) {
+        vector<string> ans;
+        for (int i = 0; i < nums.size(); i++) {
+            string s = to_string(nums[i]);
+            ans.push_back(s);
+        }
+        sort(ans.begin(), ans.end(), cmp);
+        string ret;
+        for (int i = 0; i < ans.size(); i++) {
+            ret += ans[i];
+        }
+        return ret;
+    }
+};
+```
