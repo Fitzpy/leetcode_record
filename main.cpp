@@ -11,30 +11,26 @@ struct TreeNode {
     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
-class Solution {
-public:
-    vector<string> ret;
+struct ListNode {
+    int val;
+    ListNode *next;
 
-    void dfs(TreeNode *root, string s) {
-        if (root != nullptr) {
-            s += to_string(root->val);
-            if (root->left == nullptr && root->right == nullptr) {
-                ret.push_back(s);
-            }else {
-                s += "->";
-                dfs(root->left,s);
-                dfs(root->right,s);
-            }
-        }
-    }
-
-    vector<string> binaryTreePaths(TreeNode *root) {
-        ret.clear();
-        dfs(root,"");
-        return ret;
-    }
+    ListNode(int x) : val(x), next(NULL) {}
 };
 
+class Solution {
+public:
+    ListNode *reverseList(ListNode *head) {
+        ListNode *cur = NULL, *pre = head;
+        while(pre!=NULL) {
+            ListNode * now = pre->next;
+            pre->next = cur;
+            cur = pre;
+            pre = now;
+        }
+        return cur;
+    }
+};
 
 int main() {
     return 0;

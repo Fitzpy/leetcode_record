@@ -431,3 +431,20 @@ public:
     }
 };
 ```
+
+## 剑指 Offer 24. 反转链表
+```
+class Solution {
+public:
+    ListNode *reverseList(ListNode *head) {
+        ListNode *cur = NULL, *pre = head;
+        while(pre!=NULL) {
+            ListNode * now = pre->next;
+            pre->next = cur;
+            cur = pre;
+            pre = now;
+        }
+        return cur;
+    }
+};
+···
