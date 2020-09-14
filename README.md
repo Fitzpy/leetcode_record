@@ -433,6 +433,7 @@ public:
 ```
 
 ## 剑指 Offer 24. 反转链表
+
 ```
 class Solution {
 public:
@@ -447,4 +448,29 @@ public:
         return cur;
     }
 };
-···
+```
+
+## 94. 二叉树的中序遍历
+
+```
+class Solution {
+public:
+
+    vector<int> inorderTraversal(TreeNode *root) {
+        TreeNode *cur = root;
+        vector<int> ans;
+        stack<TreeNode *> st;
+        while (cur != NULL || !st.empty()) {
+            while (cur != NULL) {
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            ans.push_back(cur->val);
+            cur = cur->right;
+        }
+        return ans;
+    }
+};
+```

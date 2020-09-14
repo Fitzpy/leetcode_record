@@ -20,15 +20,22 @@ struct ListNode {
 
 class Solution {
 public:
-    ListNode *reverseList(ListNode *head) {
-        ListNode *cur = NULL, *pre = head;
-        while(pre!=NULL) {
-            ListNode * now = pre->next;
-            pre->next = cur;
-            cur = pre;
-            pre = now;
+
+    vector<int> inorderTraversal(TreeNode *root) {
+        TreeNode *cur = root;
+        vector<int> ans;
+        stack<TreeNode *> st;
+        while (cur != NULL || !st.empty()) {
+            while (cur != NULL) {
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            ans.push_back(cur->val);
+            cur = cur->right;
         }
-        return cur;
+        return ans;
     }
 };
 
