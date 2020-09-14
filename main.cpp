@@ -2,40 +2,39 @@
 
 using namespace std;
 
-class Solution {
-public:
-    Solution(vector<int>& nums) {
-        v = nums;
-        ans = nums;
-    }
 
-    /** Resets the array to its original configuration and return it. */
-    vector<int> reset() {
-        ans = v;
-        return ans;
-    }
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
 
-    /** Returns a random shuffling of the array. */
-    vector<int> shuffle() {
-        int len = ans.size();
-        for (int i=0 ;i<len ;i++){
-            int idx = rand()%(i+1);
-            swap(ans[i],ans[idx]);
-        }
-        return ans;
-    }
-
-private:
-    vector<int>v;
-    vector<int>ans;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
-/**
- * Your Solution object will be instantiated and called as such:
- * Solution* obj = new Solution(nums);
- * vector<int> param_1 = obj->reset();
- * vector<int> param_2 = obj->shuffle();
- */
+class Solution {
+public:
+    vector<string> ret;
+
+    void dfs(TreeNode *root, string s) {
+        if (root != nullptr) {
+            s += to_string(root->val);
+            if (root->left == nullptr && root->right == nullptr) {
+                ret.push_back(s);
+            }else {
+                s += "->";
+                dfs(root->left,s);
+                dfs(root->right,s);
+            }
+        }
+    }
+
+    vector<string> binaryTreePaths(TreeNode *root) {
+        ret.clear();
+        dfs(root,"");
+        return ret;
+    }
+};
+
 
 int main() {
     return 0;
