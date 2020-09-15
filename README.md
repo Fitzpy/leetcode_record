@@ -630,3 +630,30 @@ public:
     }
 };
 ```
+## 剑指 Offer 48. 最长不含重复字符的子字符串
+```
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        map<char,int>vis;
+        vis.clear();
+        int len = s.size();
+        int L = 0, R = 0, ans = 0;
+        while (R<len) {
+            if (!vis[s[R]]) {
+                vis[s[R]]++;
+                ans = max(ans, R - L + 1);
+                R++;
+            } else {
+                char pos = s[R];
+                while (L <= R) {
+                    vis[s[L]]--;
+                    L++;
+                    if (!vis[pos]) break;
+                }
+            }
+        }
+        return ans;
+    }
+} ;
+```

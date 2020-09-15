@@ -2,30 +2,34 @@
 
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode *next;
-
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
 class Solution {
 public:
-    bool hasCycle(ListNode *head) {
-        unordered_map<ListNode *, int> mp;
-        while (head != NULL) {
-            if (mp.count(head)) {
-                return true;
+    int lengthOfLongestSubstring(string s) {
+        map<char,int>vis;
+        vis.clear();
+        int len = s.size();
+        int L = 0, R = 0, ans = 0;
+        while (R<len) {
+            if (!vis[s[R]]) {
+                vis[s[R]]++;
+                ans = max(ans, R - L + 1);
+                R++;
             } else {
-                mp[head] = 1;
-                head = head->next;
+                char pos = s[R];
+                while (L <= R) {
+                    vis[s[L]]--;
+                    L++;
+                    if (!vis[pos]) break;
+                }
             }
+            //printf("L = %d R = %d\n", L,R);
         }
-        return false;
+       //printf("%d\n", ans);
+        return ans;
     }
-};
+} solve;
 
 int main() {
-
+    solve.lengthOfLongestSubstring("abcabcbb");
     return 0;
 }
