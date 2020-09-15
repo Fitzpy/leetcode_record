@@ -15,7 +15,16 @@ void dfs(int pos, int num1, int num2, string s) {
         dfs(pos + 1, num1, num2 + 1, s + '1');
     }
 }
-unordered_map<>
+
+class A {
+public:
+
+private:
+    A() : a(0) {}
+
+    int a;
+};
+
 int main() {
     scanf("%d", &n);
     dfs(0, 0, 0, "");
