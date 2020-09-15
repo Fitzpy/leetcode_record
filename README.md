@@ -742,3 +742,17 @@ public:
     }
 };
 ```
+## 53. 最大子序和
+```
+class Solution {
+public:
+    int maxSubArray(vector<int> &nums) {
+        int ans = nums[0], pre = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            pre = max(pre+nums[i],nums[i]);
+            ans = max(ans,pre);
+        }
+        return ans;
+    }
+};
+```

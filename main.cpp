@@ -12,16 +12,11 @@ struct TreeNode {
 
 class Solution {
 public:
-    int maxArea(vector<int> &height) {
-        int low = 0, high = height.size() - 1;
-        int ans = 0;
-        while (low < high) {
-            ans = max(ans, min(height[low], height[high]) * (high - low));
-            if (height[low] < height[high]) {
-                low++;
-            } else {
-                high--;
-            }
+    int maxSubArray(vector<int> &nums) {
+        int ans = nums[0], pre = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            pre = max(pre+nums[i],nums[i]);
+            ans = max(ans,pre);
         }
         return ans;
     }
