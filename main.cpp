@@ -2,34 +2,31 @@
 
 using namespace std;
 
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        map<char,int>vis;
-        vis.clear();
-        int len = s.size();
-        int L = 0, R = 0, ans = 0;
-        while (R<len) {
-            if (!vis[s[R]]) {
-                vis[s[R]]++;
-                ans = max(ans, R - L + 1);
-                R++;
-            } else {
-                char pos = s[R];
-                while (L <= R) {
-                    vis[s[L]]--;
-                    L++;
-                    if (!vis[pos]) break;
-                }
-            }
-            //printf("L = %d R = %d\n", L,R);
-        }
-       //printf("%d\n", ans);
-        return ans;
+    int depth(TreeNode *root) {
+        if (root == NULL) return 0;
+        int L = depth(root->left);
+        int R = depth(root->right);
+        return max(L, R) + 1;
     }
-} solve;
+
+    bool isBalanced(TreeNode *root) {
+        if (root == NULL) return true;
+        if (abs(depth(root->left)-depth(root->right))>1) return false;
+        else return (isBalanced(root->left)&isBalanced(root->right));
+    }
+};
 
 int main() {
-    solve.lengthOfLongestSubstring("abcabcbb");
+
     return 0;
 }
