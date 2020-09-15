@@ -676,3 +676,24 @@ public:
     }
 };
 ```
+## 剑指 Offer 39. 数组中出现次数超过一半的数字
+```
+class Solution {
+public:
+    int majorityElement(vector<int> &nums) {
+        int len = nums.size();
+        int key = nums[0], num = 1;
+        for (int i = 1; i < len; i++) {
+            if (num == 0) {
+                key = nums[i];
+                num = 1;
+            } else if (nums[i] != key) {
+                num--;
+            } else {
+                num++;
+            }
+        }
+        return key;
+    }
+};
+```

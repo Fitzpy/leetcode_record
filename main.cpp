@@ -12,17 +12,20 @@ struct TreeNode {
 
 class Solution {
 public:
-    int depth(TreeNode *root) {
-        if (root == NULL) return 0;
-        int L = depth(root->left);
-        int R = depth(root->right);
-        return max(L, R) + 1;
-    }
-
-    bool isBalanced(TreeNode *root) {
-        if (root == NULL) return true;
-        if (abs(depth(root->left)-depth(root->right))>1) return false;
-        else return (isBalanced(root->left)&isBalanced(root->right));
+    int majorityElement(vector<int> &nums) {
+        int len = nums.size();
+        int key = nums[0], num = 1;
+        for (int i = 1; i < len; i++) {
+            if (num == 0) {
+                key = nums[i];
+                num = 1;
+            } else if (nums[i] != key) {
+                num--;
+            } else {
+                num++;
+            }
+        }
+        return key;
     }
 };
 
