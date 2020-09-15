@@ -12,24 +12,18 @@ struct TreeNode {
 
 class Solution {
 public:
-    int L[100010], R[100010];
-
-    int trap(vector<int> &height) {
-        int len = height.size();
-        for (int i = 1; i <= len; i++) {
-            L[i] = max(L[i - 1], height[i - 1]);
-        }
-        for (int i = len; i >= 1; i--) {
-            R[i] = max(R[i + 1], height[i - 1]);
-        }
-        int sum = 0;
-        for (int i = 1; i <= len; i++) {
-            int minn = min(L[i - 1], R[i + 1]);
-            if (height[i - 1] < minn) {
-                sum += minn - height[i - 1];
+    int maxArea(vector<int> &height) {
+        int low = 0, high = height.size() - 1;
+        int ans = 0;
+        while (low < high) {
+            ans = max(ans, min(height[low], height[high]) * (high - low));
+            if (height[low] < height[high]) {
+                low++;
+            } else {
+                high--;
             }
         }
-        return sum;
+        return ans;
     }
 };
 
