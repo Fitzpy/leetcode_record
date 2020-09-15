@@ -12,20 +12,24 @@ struct TreeNode {
 
 class Solution {
 public:
-    int majorityElement(vector<int> &nums) {
-        int len = nums.size();
-        int key = nums[0], num = 1;
-        for (int i = 1; i < len; i++) {
-            if (num == 0) {
-                key = nums[i];
-                num = 1;
-            } else if (nums[i] != key) {
-                num--;
-            } else {
-                num++;
+    int L[100010], R[100010];
+
+    int trap(vector<int> &height) {
+        int len = height.size();
+        for (int i = 1; i <= len; i++) {
+            L[i] = max(L[i - 1], height[i - 1]);
+        }
+        for (int i = len; i >= 1; i--) {
+            R[i] = max(R[i + 1], height[i - 1]);
+        }
+        int sum = 0;
+        for (int i = 1; i <= len; i++) {
+            int minn = min(L[i - 1], R[i + 1]);
+            if (height[i - 1] < minn) {
+                sum += minn - height[i - 1];
             }
         }
-        return key;
+        return sum;
     }
 };
 
