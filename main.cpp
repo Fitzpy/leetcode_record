@@ -2,58 +2,45 @@
 
 using namespace std;
 
-class String {
-public:
-    String(const char *str);
+struct ListNode {
+    int val;
+    ListNode *next;
 
-    String(const String &s);
-
-    String &operator=(const String &s);
-
-    ~String();
-
-private:
-    char *data;
+    ListNode(int x) : val(x), next(NULL) {}
 };
 
-String::String(const char *str) {
-    if (str == NULL) {
-        data = new char[1];
-        *data = '\0';
-    } else {
-        int len = strlen(str);
-        data = new char[len + 1];
-        strcpy(data, str);
+class Solution {
+public:
+    /** @param head The linked list's head.
+        Note that the head is guaranteed to be not null, so it contains at least one node. */
+    Solution(ListNode *head) {
+        Head = head;
     }
-}
 
-String::String(const String &s) {
-    int len = strlen(s.data);
-    if (len == 0) {
-        data = new char[1];
-        *data = '\0';
-    } else {
-        data = new char[len + 1];
-        strcpy(data, s.data);
+    /** Returns a random node's value. */
+    int getRandom() {
+        ListNode *cur = Head;
+        int num = 0, ret = Head->val;
+        while (cur) {
+            int now = rand() % (num + 1);
+            num++;
+            if (now == 0) {
+                ret = cur->val;
+            }
+            cur = cur->next;
+        }
+        return ret;
     }
-}
 
-String &String::operator=(const String &s) {
-    //检查是否是自赋值
-    if (this == &s) {
-        return *this;
-    }
-    delete[]data;
-    int len = strlen(s.data);
-    data = new char[len + 1];
-    strcpy(data, s.data);
-    return *this;
-}
+private:
+    ListNode *Head;
+};
 
-String::~String() {
-    delete[]data;
-}
-
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(head);
+ * int param_1 = obj->getRandom();
+ */
 int main() {
     return 0;
 }
