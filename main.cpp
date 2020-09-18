@@ -2,42 +2,58 @@
 
 using namespace std;
 
-class Solution {
+class String {
 public:
-    vector<int> maxSlidingWindow(vector<int> &nums, int k) {
-        deque<int> deq;
-        vector<int> ans;
-        int len = nums.size();
-        for (int i = 0; i < len; i++) {
-            if (i < k) {
-                if (deq.empty()) deq.push_back(i);
-                else {
-                    while (!deq.empty() && nums[deq.back()] < nums[i]) deq.pop_back();
-                    deq.push_back(i);
-                }
-                if (i == k - 1) ans.push_back(nums[deq.front()]);
-            } else {
-                if (!deq.empty() && i - deq.front() >= k) deq.pop_front();
-                if (deq.empty()) deq.push_back(i);
-                else {
-                    while (!deq.empty() && nums[deq.back()] < nums[i]) deq.pop_back();
-                    deq.push_back(i);
-                }
-                ans.push_back(nums[deq.front()]);
-            }
-        }
-        return ans;
+    String(const char *str);
+
+    String(const String &s);
+
+    String &operator=(const String &s);
+
+    ~String();
+
+private:
+    char *data;
+};
+
+String::String(const char *str) {
+    if (str == NULL) {
+        data = new char[1];
+        *data = '\0';
+    } else {
+        int len = strlen(str);
+        data = new char[len + 1];
+        strcpy(data, str);
     }
-} solve;
+}
+
+String::String(const String &s) {
+    int len = strlen(s.data);
+    if (len == 0) {
+        data = new char[1];
+        *data = '\0';
+    } else {
+        data = new char[len + 1];
+        strcpy(data, s.data);
+    }
+}
+
+String &String::operator=(const String &s) {
+    //检查是否是自赋值
+    if (this == &s) {
+        return *this;
+    }
+    delete[]data;
+    int len = strlen(s.data);
+    data = new char[len + 1];
+    strcpy(data, s.data);
+    return *this;
+}
+
+String::~String() {
+    delete[]data;
+}
 
 int main() {
-    vector<int> in;
-    int k = 3;
-    for (int i = 0; i < 8; i++) {
-        int x;
-        cin >> x;
-        in.push_back(x);
-    }
-    solve.maxSlidingWindow(in, k);
     return 0;
 }
