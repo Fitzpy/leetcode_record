@@ -11,36 +11,22 @@ struct ListNode {
 
 class Solution {
 public:
-    /** @param head The linked list's head.
-        Note that the head is guaranteed to be not null, so it contains at least one node. */
-    Solution(ListNode *head) {
-        Head = head;
-    }
-
-    /** Returns a random node's value. */
-    int getRandom() {
-        ListNode *cur = Head;
-        int num = 0, ret = Head->val;
-        while (cur) {
-            int now = rand() % (num + 1);
+    ListNode *getKthFromEnd(ListNode *head, int k) {
+        ListNode *now1 = head, *now2 = head;
+        int num = 0;
+        while (now2 != NULL) {
             num++;
-            if (now == 0) {
-                ret = cur->val;
+            if (num < k) {
+                now2 = now2->next;
+            } else {
+                now1 = now1->next;
+                now2 = now2->next;
             }
-            cur = cur->next;
         }
-        return ret;
+        return now1;
     }
-
-private:
-    ListNode *Head;
 };
 
-/**
- * Your Solution object will be instantiated and called as such:
- * Solution* obj = new Solution(head);
- * int param_1 = obj->getRandom();
- */
 int main() {
     return 0;
 }

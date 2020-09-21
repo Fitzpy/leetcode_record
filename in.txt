@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int T, n, m;
+char mp[1010][1010];
+int vis[1010][1010];
+int xpos, ypos;
+int dx[4] = {0, 0, 1, -1};
+int dy[4] = {1, -1, 0, 0};
+
+struct node {
+    int x, y, val;
+
+};
+
+int check(int x, int y) {
+    if (x < 0 || x >= n || y < 0 || y >= m || mp[x][y] == '#') return 0;
+    return 1;
+}
+
+int judge(int x, int y) {
+    if (x == 0 || x == n - 1 || y == 0 || y == m - 1) return 1;
+    return 0;
+}
+
+queue<node> que;
+
+int bfs() {
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            vis[i][j] = 99999999;
+    while (!que.empty()) que.pop();
+    que.push({xpos, ypos, 0});
+    while (!que.empty()) {
+        node now = que.front();
+        que.pop();
+        //printf("x = %d y = %d\n", now.x, now.y);
+        if (vis[now.x][now.y] < now.val) continue;
+        vis[now.x][now.y] = now.val;
+        for (int i = 0; i < 4; i++) {
+            int nx = now.x + dx[i], ny = now.y + dy[i];
+            if (check(nx, ny)) {
+                if (mp[nx][ny] == '.') que.push({nx, ny, now.val});
+                if (mp[nx][ny] == '*') que.push({nx, ny, now.val + 1});
+            }
+        }
+    }
+    int ans = 0;
+    for (int i=0 ;i<m ;i++) ans=min(ans,vis[0][i]);
+    for (int i=0 ;i<m ;i++) ans=min(ans,vis[n-1][i]);
+    for (int i=0 ;i<n ;i++) ans=min(ans,vis[i][0]);
+    for (int i=0 ;i<n ;i++) ans=min(ans,vis[i][m-1]);
+    if (ans == 99999999) ans =-1;
+    return ans;
+}
+
+int main() {
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d%d", &n, &m);
+        for (int i = 0; i < n; i++) {
+            scanf("%s", mp[i]);
+            for (int j = 0; j < m; j++) {
+                if (mp[i][j] == '@') {
+                    xpos = i, ypos = j;
+                }
+            }
+        }
+        printf("%d\n", bfs());
+    }
+    return 0;
+}

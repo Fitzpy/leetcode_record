@@ -841,8 +841,9 @@ String &String::operator=(const String &s) {
 String::~String() {
     delete[]data;
 }
-``` 382. 链表随机节点
-## 
+``` 
+
+## 382. 链表随机节点
 ```
 class Solution {
 public:
@@ -870,5 +871,27 @@ public:
 private:
     ListNode *Head;
 };
+```
+
+## 剑指 Offer 22. 链表中倒数第k个节点
 
 ```
+class Solution {
+public:
+    ListNode *getKthFromEnd(ListNode *head, int k) {
+        ListNode *now1 = head, *now2 = head;
+        int num = 0;
+        while (now2 != NULL) {
+            num++;
+            if (num <= k) {
+                now2 = now2->next;
+            } else {
+                now1 = now1->next;
+                now2 = now2->next;
+            }
+        }
+        return now1;
+    }
+};
+```
+
