@@ -11,93 +11,70 @@ struct ListNode {
 
 class HashMap {
 public:
-    void put(string s);
+    HashMap() {
+        capacity = 10;
+        mp.resize(capacity);
+    }
 
-    int get(string s);
+    void put(unsigned long long key, int val);
+
+    int get(unsigned long long key);
+
+    void rehash();
 
 private:
-
+    vector<list<pair<unsigned long long, int>>> mp;
+    int capacity;
+    int size = 0;
+    unsigned long long seed = 13331;
 };
 
-void HashMap::put(string s) {
-
-}
-
-int HashMap::get(string s) {
-
-}
-
-
-class ThreadPool {
-public:
-    ThreadPool(int threads);
-
-    template<class F, class ...Args>
-    void push(F &&f, Args &&...args);
-
-    ~ThreadPool();
-
-private:
-    bool stop;
-    mutex queue_mutex;
-    condition_variable condition;
-    vector<thread> workers;
-    queue<function<void()>> tasks;
-};
-
-ThreadPool::ThreadPool(int threads) : stop(false) {
-    for (int i = 0; i < threads; i++) {
-        workers.emplace_back(
-                [this] {
-                    while (1) {
-                        function<void()> task;
-                        {
-                            unique_lock<mutex> lock(this->queue_mutex);
-                            condition.wait(lock, [this] {
-                                return this->stop || !this->tasks.empty();
-                            });
-                            if (this->stop && this->tasks.empty()) return;
-                            task = move(tasks.front());
-                            tasks.pop();
-                        }
-                        task();
-                    }
-                }
-        );
+void HashMap::put(unsigned long long key, int val) {
+    int idx = key % capacity;
+    for (auto it = mp[idx].begin(); it != mp[idx].end(); it++) {
+        if (it->first == key) {
+            it->second = val;
+            return;
+        }
     }
+    size++;
+    mp[idx].push_back(make_pair(key, val));
+    if (size == capacity) rehash();
 }
 
-template<class F, class ...Args>
-void ThreadPool::push(F &&f, Args &&...args) {
-    auto task = bind(f, args...);
-    {
-        unique_lock<mutex> lock(queue_mutex);
-        if (stop) return;
-        tasks.push(task);
+int HashMap::get(unsigned long long key) {
+    int idx = key % capacity;
+    for (auto it = mp[idx].begin(); it != mp[idx].end(); it++) {
+        if (it->first == key) {
+            return it->second;
+        }
     }
-    condition.notify_one();
+    return -1;
 }
 
-ThreadPool::~ThreadPool() {
-    {
-        unique_lock<mutex> lock(queue_mutex);
-        stop = true;
+void HashMap::rehash() {
+    capacity *= 2;
+    mp.resize(capacity);
+    for (int i = 0; i < capacity / 2; i++) {
+        for (auto it = mp[i].begin(); it != mp[i].end(); it++) {
+            unsigned long long key = it->first;
+            int val = it->second;
+            int idx = key % (2 * capacity);
+            if (idx == i) continue;
+            put(key, val);
+        }
     }
-    condition.notify_all();
-    for (thread &worker :workers) {
-        worker.join();
-    }
-}
-
-void the_task(int i) {
-    printf("worker thread ID: = %d i = %d\n", std::this_thread::get_id(), i);
 }
 
 int main() {
-    ThreadPool pool(4);
-    pool.push(the_task, 1);
-    pool.push(the_task, 2);
-    pool.push(the_task, 3);
-    pool.push(the_task, 4);
+    HashMap mp;
+    mp.put(123, 1);
+    mp.put(123123, 2);
+    mp.put(111, 3);
+    mp.put(222, 4);
+    cout << mp.get(123) << endl;
+    cout << mp.get(123123) << endl;
+    cout << mp.get(111) << endl;
+    cout << mp.get(222) << endl;
     return 0;
 }
