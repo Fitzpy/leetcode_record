@@ -9,72 +9,95 @@ struct ListNode {
     ListNode(int x) : val(x), next(NULL) {}
 };
 
-template<typename T>
-class SmartPtr;
-
-template<typename T>
-class U_Ptr {
-private:
-    friend class SmartPtr<T>;
-
-    U_Ptr(T *ptr) : p(ptr), count(1) {}
-
-    ~U_Ptr() {
-        delete p;
-    }
-
-    T *p;
-    atomic<int> count;
-};
-
-template<typename T>
-class SmartPtr {
+class HashMap {
 public:
-    SmartPtr(T *ptr) : rp(new U_Ptr<T>(ptr)) {}
+    void put(string s);
 
-    SmartPtr(const SmartPtr<T> &sp) : rp(sp.rp) {
-        ++rp->count;
-    }
-
-    SmartPtr &operator=(const SmartPtr<T> &rhs) {
-        ++rhs.rp->count;
-        if (--rp->count == 0) delete rp;
-        rp = rhs.rp;
-        return *this;
-    }
-
-    T &operator*() {
-        return *(rp->p);
-    }
-
-    T *operator->() {
-        return rp->p;
-    }
-
-    ~SmartPtr() {
-        if (--rp->count == 0) {
-            delete rp;
-        } else cout << "还有" << rp->count << "个指针指向基础对象" << endl;
-    }
+    int get(string s);
 
 private:
-    U_Ptr<T> *rp;
+
 };
+
+void HashMap::put(string s) {
+
+}
+
+int HashMap::get(string s) {
+
+}
+
+
+class ThreadPool {
+public:
+    ThreadPool(int threads);
+
+    template<class F, class ...Args>
+    void push(F &&f, Args &&...args);
+
+    ~ThreadPool();
+
+private:
+    bool stop;
+    mutex queue_mutex;
+    condition_variable condition;
+    vector<thread> workers;
+    queue<function<void()>> tasks;
+};
+
+ThreadPool::ThreadPool(int threads) : stop(false) {
+    for (int i = 0; i < threads; i++) {
+        workers.emplace_back(
+                [this] {
+                    while (1) {
+                        function<void()> task;
+                        {
+                            unique_lock<mutex> lock(this->queue_mutex);
+                            condition.wait(lock, [this] {
+                                return this->stop || !this->tasks.empty();
+                            });
+                            if (this->stop && this->tasks.empty()) return;
+                            task = move(tasks.front());
+                            tasks.pop();
+                        }
+                        task();
+                    }
+                }
+        );
+    }
+}
+
+template<class F, class ...Args>
+void ThreadPool::push(F &&f, Args &&...args) {
+    auto task = bind(f, args...);
+    {
+        unique_lock<mutex> lock(queue_mutex);
+        if (stop) return;
+        tasks.push(task);
+    }
+    condition.notify_one();
+}
+
+ThreadPool::~ThreadPool() {
+    {
+        unique_lock<mutex> lock(queue_mutex);
+        stop = true;
+    }
+    condition.notify_all();
+    for (thread &worker :workers) {
+        worker.join();
+    }
+}
+
+void the_task(int i) {
+    printf("worker thread ID: = %d i = %d\n", std::this_thread::get_id(), i);
+}
 
 int main() {
-    int *i = new int(2);
-    {
-        SmartPtr<int> ptr1(i);
-        {
-            SmartPtr<int> ptr2(ptr1);
-            {
-                SmartPtr<int> ptr3 = ptr2;
-                cout << *ptr1 << endl;
-                *ptr1 = 20;
-                cout << *ptr2 << endl;
-            }
-        }
-    }
-    system("pause");
+    ThreadPool pool(4);
+    pool.push(the_task, 1);
+    pool.push(the_task, 2);
+    pool.push(the_task, 3);
+    pool.push(the_task, 4);
     return 0;
 }
