@@ -19,24 +19,12 @@ struct TreeNode {
 
 class Solution {
 public:
-    unordered_map<TreeNode *, int> mp1, mp2;
-
-    void dfs(TreeNode *root) {
-        if (root == NULL) {
-            return;
-        }
-        dfs(root->left);
-        dfs(root->right);
-        mp1[root] = root->val + mp2[root->left] + mp2[root->right];
-        mp2[root] = max(mp1[root->left], mp2[root->left]) + max(mp1[root->right], mp2[root->right]);
-
-    }
-
-    int rob(TreeNode *root) {
-        mp1.clear();
-        mp2.clear();
-        dfs(root);
-        return max(mp1[root], mp2[root]);
+    TreeNode *mirrorTree(TreeNode *root) {
+        if (root == NULL) return root;
+        TreeNode *temp = root->left;
+        root->left = mirrorTree(root->right);
+        root->right = mirrorTree(temp);
+        return root;
     }
 };
 

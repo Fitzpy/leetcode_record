@@ -1128,3 +1128,16 @@ public:
 };
 
 ```
+## 剑指 Offer 27. 二叉树的镜像
+```
+class Solution {
+public:
+    TreeNode *mirrorTree(TreeNode *root) {
+        if (root == NULL) return root;
+        TreeNode *temp = root->left;
+        root->left = mirrorTree(root->right);
+        root->right = mirrorTree(temp);
+        return root;
+    }
+};
+```
