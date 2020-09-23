@@ -11,16 +11,22 @@ struct ListNode {
 
 class Solution {
 public:
-    ListNode *reverseList(ListNode *head) {
-        ListNode *pre = head;
-        ListNode *cur = NULL;
-        while (pre != NULL) {
-            ListNode *temp = pre->next;
-            pre->next = cur;
-            cur = pre;
-            pre = temp;
+    vector<int> smallestK(vector<int> &arr, int k) {
+        priority_queue<int> que;
+        for (int i = 0; i < arr.size(); i++) {
+            if (que.size() < k) {
+                que.push(arr[i]);
+            } else {
+                que.push(arr[i]);
+                que.pop();
+            }
         }
-        return cur;
+        vector<int> ret;
+        while (!que.empty()) {
+            ret.push_back(que.top());
+            que.pop();
+        }
+        return ret;
     }
 };
 
