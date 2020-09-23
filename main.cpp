@@ -11,22 +11,23 @@ struct ListNode {
 
 class Solution {
 public:
-    vector<int> smallestK(vector<int> &arr, int k) {
-        priority_queue<int> que;
-        for (int i = 0; i < arr.size(); i++) {
-            if (que.size() < k) {
-                que.push(arr[i]);
-            } else {
-                que.push(arr[i]);
-                que.pop();
+    int minPathSum(vector<vector<int>> &grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1));
+        for (int i = 0; i < m; i++) {
+            if (i == 0) dp[0][i] = grid[0][i];
+            else dp[0][i] = dp[0][i - 1] + grid[0][i];
+        }
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (j == 0) dp[i][j] = dp[i - 1][j] + grid[i][j];
+                else {
+                    dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+                }
             }
         }
-        vector<int> ret;
-        while (!que.empty()) {
-            ret.push_back(que.top());
-            que.pop();
-        }
-        return ret;
+        return dp[n][m];
     }
 };
 
