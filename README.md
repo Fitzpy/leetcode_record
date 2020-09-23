@@ -1179,3 +1179,20 @@ public:
     }
 };
 ```
+## 206. 反转链表
+```
+class Solution {
+public:
+    ListNode *reverseList(ListNode *head) {
+        ListNode *pre = head;
+        ListNode *cur = NULL;
+        while (pre != NULL) {
+            ListNode *temp = pre->next;
+            pre->next = cur;
+            cur = pre;
+            pre = temp;
+        }
+        return cur;
+    }
+};
+```
