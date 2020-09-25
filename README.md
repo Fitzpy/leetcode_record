@@ -1275,3 +1275,14 @@ public:
     }
 } solve;
 ```
+## 手写strcpy
+```
+char *MyStrCpy(char *dst, char *src) {
+    if (dst == NULL || src == NULL) {
+        return NULL;
+    }
+    char *ret = dst;
+    while ((*dst++ = *src++) != '\0');
+    return ret;
+}
+```
