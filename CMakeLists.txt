@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
-project(leetcode_record)
+project(leetcodeRecord)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(leetcode_record main.cpp)
+add_executable(leetcodeRecord main.cpp)
 

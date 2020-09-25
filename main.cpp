@@ -2,36 +2,41 @@
 
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode *next;
-
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
 class Solution {
 public:
-    int minPathSum(vector<vector<int>> &grid) {
-        int n = grid.size();
-        int m = grid[0].size();
-        vector<vector<int>> dp(n + 1, vector<int>(m + 1));
-        for (int i = 0; i < m; i++) {
-            if (i == 0) dp[0][i] = grid[0][i];
-            else dp[0][i] = dp[0][i - 1] + grid[0][i];
-        }
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (j == 0) dp[i][j] = dp[i - 1][j] + grid[i][j];
-                else {
-                    dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+    int search(vector<int> &nums, int target) {
+        int len = nums.size() - 1;
+        int low = 0, high = len, ans = -1, mid;
+        while (low <= high) {
+            mid = (low + high) / 2;
+            printf("mid = %d\n", mid);
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[0] <= nums[mid]) {
+                if (nums[mid] > target && nums[0] <= target) {
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
+            } else if (nums[mid] <= nums[len]) {
+                if (nums[mid] < target && nums[len] >= target) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
                 }
             }
         }
-        return dp[n][m];
+        return -1;
     }
-};
+} solve;
 
 int main() {
-
+    int n = 6, in2 = 0;
+    vector<int> in;
+    for (int i = 0, x; i < n; i++) {
+        cin >> x;
+        in.push_back(x);
+    }
+    solve.search(in, in2);
     return 0;
 }
