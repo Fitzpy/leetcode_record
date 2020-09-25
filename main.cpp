@@ -2,14 +2,6 @@
 
 using namespace std;
 
-char *MyStrCpy(char *dst, char *src) {
-    if (dst == NULL || src == NULL) {
-        return NULL;
-    }
-    char *ret = dst;
-    while ((*dst++ = *src++) != '\0');
-    return ret;
-}
 
 void *MemCpy(char *dst, char *src, int size) {
     if (dst == NULL || src == NULL) {
@@ -31,10 +23,30 @@ void *MemCpy(char *dst, char *src, int size) {
     return dst;
 }
 
+char *MyStrCpy(char *dst, char *src) {
+    if (dst == NULL || src == NULL) {
+        return NULL;
+    }
+    char *pdst = dst;
+    char *psrc = src;
+    int len = strlen(src)+1; //¥¶¿Ì'\0'
+    if (src < dst && src + len > dst) {
+        pdst += len - 1;
+        psrc += len - 1;
+        while (len--) {
+            *pdst-- = *psrc--;
+        }
+    } else {
+        while ((*pdst++ = *psrc++) != '\0');
+    }
+    return pdst;
+}
+
+
 int main() {
     char strSrc[] = "Hello World!";
     char strDest[20];
-    MyStrCpy(strDest,strSrc);
+    strcpy(strDest, strSrc);
     cout << "strDest: " << strDest << endl;
     return 0;
 }

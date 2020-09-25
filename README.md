@@ -1281,9 +1281,19 @@ char *MyStrCpy(char *dst, char *src) {
     if (dst == NULL || src == NULL) {
         return NULL;
     }
-    char *ret = dst;
-    while ((*dst++ = *src++) != '\0');
-    return ret;
+    char *pdst = dst;
+    char *psrc = src;
+    int len = strlen(src)+1; //处理'\0'
+    if (src < dst && src + len > dst) {
+        pdst += len - 1;
+        psrc += len - 1;
+        while (len--) {
+            *pdst-- = *psrc--;
+        }
+    } else {
+        while ((*pdst++ = *psrc++) != '\0');
+    }
+    return pdst;
 }
 ```
 ## 手写MemCpy
