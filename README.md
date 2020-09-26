@@ -1319,3 +1319,25 @@ void *MemCpy(char *dst, char *src, int size) {
 }
 
 ```
+
+## 905. 按奇偶排序数组
+```
+class Solution {
+public:
+    vector<int> sortArrayByParity(vector<int> &A) {
+        int len = A.size();
+        int L = 0, R = len - 1;
+        while (L < R) {
+            if (A[L] & 1) {
+                while (A[R] & 1) {
+                    R--;
+                    if (L>=R) return A;
+                }
+                swap(A[L], A[R]);
+            }
+            L++;
+        }
+        return A;
+    }
+};
+```
