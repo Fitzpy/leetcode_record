@@ -1,73 +1,164 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-
-int T, n, m;
-char mp[1010][1010];
-int vis[1010][1010];
-int xpos, ypos;
+int n, m, endx, endy, minn = 9999999;
+char mp[55][55];
+vector<pair<int, int>> v, ret;
+struct node {
+    int x, y, step, idx;
+};
 int dx[4] = {0, 0, 1, -1};
 int dy[4] = {1, -1, 0, 0};
+int vis[55][55][205];
 
-struct node {
-    int x, y, val;
-
-};
+int mmp[555];
 
 int check(int x, int y) {
-    if (x < 0 || x >= n || y < 0 || y >= m || mp[x][y] == '#') return 0;
+    if (x < 0 || x >= n || y < 0 || y >= m || mp[x][y] == '1') return 0;
     return 1;
 }
 
-int judge(int x, int y) {
-    if (x == 0 || x == n - 1 || y == 0 || y == m - 1) return 1;
-    return 0;
-}
-
-queue<node> que;
-
-int bfs() {
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++)
-            vis[i][j] = 99999999;
-    while (!que.empty()) que.pop();
-    que.push({xpos, ypos, 0});
+void bfs() {
+    queue<node> que;
+    for (int i = 0; i < v.size(); i++) {
+        //printf("v[i] = %d %d\n", v[i].first, v[i].second);
+        que.push({v[i].first, v[i].second, 0, i});
+    }
     while (!que.empty()) {
         node now = que.front();
         que.pop();
-        //printf("x = %d y = %d\n", now.x, now.y);
-        if (vis[now.x][now.y] < now.val) continue;
-        vis[now.x][now.y] = now.val;
+        if (now.x == endx && now.y == endy) {
+            minn = min(now.step, minn);
+            //printf("now.step = %d now.idx = %d\n", now.step, now.idx);
+            mmp[now.idx] = now.step;
+        }
+        // printf("now = %d %d\n", now.x, now.y);
         for (int i = 0; i < 4; i++) {
             int nx = now.x + dx[i], ny = now.y + dy[i];
-            if (check(nx, ny)) {
-                if (mp[nx][ny] == '.') que.push({nx, ny, now.val});
-                if (mp[nx][ny] == '*') que.push({nx, ny, now.val + 1});
+            if (check(nx, ny) && !vis[nx][ny][now.idx] && (mp[nx][ny] == '0' || mp[nx][ny] == 'T')) {
+                //if (now.idx==0)  printf("nxy = %d %d %d %d\n", nx, ny,now.step+1,now.idx);
+                que.push({nx, ny, now.step + 1, now.idx});
+                vis[nx][ny][now.idx] = 1;
             }
         }
     }
-    int ans = 0;
-    for (int i=0 ;i<m ;i++) ans=min(ans,vis[0][i]);
-    for (int i=0 ;i<m ;i++) ans=min(ans,vis[n-1][i]);
-    for (int i=0 ;i<n ;i++) ans=min(ans,vis[i][0]);
-    for (int i=0 ;i<n ;i++) ans=min(ans,vis[i][m-1]);
-    if (ans == 99999999) ans =-1;
-    return ans;
 }
 
+
 int main() {
-    scanf("%d", &T);
-    while (T--) {
-        scanf("%d%d", &n, &m);
-        for (int i = 0; i < n; i++) {
-            scanf("%s", mp[i]);
-            for (int j = 0; j < m; j++) {
-                if (mp[i][j] == '@') {
-                    xpos = i, ypos = j;
-                }
+    scanf("%d%d", &n, &m);
+    for (int i = 0; i < n; i++) {
+        scanf("%s", mp[i]);
+        for (int j = 0; j < m; j++) {
+            if (mp[i][j] == 'X') {
+                v.emplace_back(i, j);
+            }
+            if (mp[i][j] == 'T') {
+                endx = i;
+                endy = j;
             }
         }
-        printf("%d\n", bfs());
     }
+    bfs();
+    for (int i = 0; i < v.size(); i++) {
+        if (mmp[i] == minn) {
+            ret.push_back(v[i]);
+        }
+    }
+    sort(ret.begin(), ret.end());
+    printf("%d\n", minn);
+    for (int i = 0; i < ret.size(); i++) {
+        printf("%d %d ", ret[i].first, ret[i].second);
+    }
+    printf("\n");
     return 0;
 }
+10
+10
+0 0 0 0 0 0 0 0 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 0 0 0 0 0 0 0 0
+10
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 1 1 0 0 0 0
+0 0 0 1 1 1 0 0 0 0
+0 0 0 0 1 1 0 0 0 0
+0 0 0 0 1 1 0 0 0 0
+0 0 0 0 1 1 0 0 0 0
+0 0 0 0 1 1 0 0 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+10
+0 0 0 0 0 0 0 0 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 1 1 1 1 1 1 0 0
+0 0 0 0 0 1 1 0 0 0
+0 0 0 0 1 1 0 0 0 0
+0 0 0 0 1 1 0 0 0 0
+0 0 0 1 1 0 0 0 0 0
+0 0 1 1 1 1 1 1 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+10
+0 0 0 0 0 0 0 0 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 0 0 0 0 1 1 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 0 0 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+10
+0 0 0 0 0 0 0 0 0 0
+0 0 1 1 0 0 0 0 0 0
+0 0 1 1 1 1 1 1 0 0
+0 0 1 1 0 0 0 0 0 0
+0 0 1 1 1 1 1 0 0 0
+0 0 0 0 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+10
+0 0 0 0 0 0 0 0 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 1 1 0 0 0 0 0 0
+0 0 1 1 0 0 0 0 0 0
+0 0 1 1 1 1 1 0 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+10
+0 0 0 0 0 0 0 0 0 0
+0 0 1 1 1 1 1 1 0 0
+0 0 1 1 1 1 1 1 0 0
+0 0 0 0 0 0 1 1 0 0
+0 0 0 0 0 1 1 0 0 0
+0 0 0 0 1 1 0 0 0 0
+0 0 0 1 1 0 0 0 0 0
+0 0 1 1 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+10
+0 0 0 0 0 0 0 0 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 1 1 0 0 1 1 0 0
+0 0 0 1 1 1 1 0 0 0
+0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
