@@ -1,164 +1,78 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-int n, m, endx, endy, minn = 9999999;
-char mp[55][55];
-vector<pair<int, int>> v, ret;
-struct node {
-    int x, y, step, idx;
-};
-int dx[4] = {0, 0, 1, -1};
-int dy[4] = {1, -1, 0, 0};
-int vis[55][55][205];
 
-int mmp[555];
-
-int check(int x, int y) {
-    if (x < 0 || x >= n || y < 0 || y >= m || mp[x][y] == '1') return 0;
-    return 1;
-}
-
-void bfs() {
-    queue<node> que;
-    for (int i = 0; i < v.size(); i++) {
-        //printf("v[i] = %d %d\n", v[i].first, v[i].second);
-        que.push({v[i].first, v[i].second, 0, i});
-    }
-    while (!que.empty()) {
-        node now = que.front();
-        que.pop();
-        if (now.x == endx && now.y == endy) {
-            minn = min(now.step, minn);
-            //printf("now.step = %d now.idx = %d\n", now.step, now.idx);
-            mmp[now.idx] = now.step;
-        }
-        // printf("now = %d %d\n", now.x, now.y);
-        for (int i = 0; i < 4; i++) {
-            int nx = now.x + dx[i], ny = now.y + dy[i];
-            if (check(nx, ny) && !vis[nx][ny][now.idx] && (mp[nx][ny] == '0' || mp[nx][ny] == 'T')) {
-                //if (now.idx==0)  printf("nxy = %d %d %d %d\n", nx, ny,now.step+1,now.idx);
-                que.push({nx, ny, now.step + 1, now.idx});
-                vis[nx][ny][now.idx] = 1;
-            }
-        }
-    }
-}
-
+int T, n;
+map<int, string> mp;
 
 int main() {
-    scanf("%d%d", &n, &m);
-    for (int i = 0; i < n; i++) {
-        scanf("%s", mp[i]);
-        for (int j = 0; j < m; j++) {
-            if (mp[i][j] == 'X') {
-                v.emplace_back(i, j);
+    cin >> T;
+    while (T--) {
+        cin >> n;
+        priority_queue<int> que;
+        while (!que.empty()) que.pop();
+        mp.clear();
+        for (int i = 0; i < n; i++) que.push(-i);
+        while (n--) {
+            string op;
+            cin >> op;
+            if (op == "open") {
+                string FileName;
+                cin >> FileName;
+                while (mp.count((-que.top()))) que.pop();
+                mp[-que.top()] = FileName;
+                printf("%d\n", -que.top());
+                que.pop();
             }
-            if (mp[i][j] == 'T') {
-                endx = i;
-                endy = j;
+            if (op == "dup") {
+                int fd;
+                cin >> fd;
+                while (mp.count((-que.top()))) que.pop();
+                mp[-que.top()] = mp[fd];
+                printf("%d\n", -que.top());
+                que.pop();
+            }
+            if (op == "dup2") {
+                int fd, new_fd;
+                cin >> fd >> new_fd;
+                mp[new_fd] = mp[fd];
+            }
+            if (op == "close") {
+                int fd;
+                cin >> fd;
+                mp.erase(fd);
+                que.push(-fd);
+            }
+            if (op == "query") {
+                int fd;
+                cin >> fd;
+                cout << mp[fd] << endl;
             }
         }
     }
-    bfs();
-    for (int i = 0; i < v.size(); i++) {
-        if (mmp[i] == minn) {
-            ret.push_back(v[i]);
-        }
-    }
-    sort(ret.begin(), ret.end());
-    printf("%d\n", minn);
-    for (int i = 0; i < ret.size(); i++) {
-        printf("%d %d ", ret[i].first, ret[i].second);
-    }
-    printf("\n");
     return 0;
 }
+
+2
 10
+open libc.so
+open libm.so
+open libdl.so
+dup 2
+dup2 0 2
+close 0
+query 1
+query 2
+query 3
+open log.txt
 10
-0 0 0 0 0 0 0 0 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 0 0 0 0 0 0 0 0
-10
-0 0 0 0 0 0 0 0 0 0
-0 0 0 0 1 1 0 0 0 0
-0 0 0 1 1 1 0 0 0 0
-0 0 0 0 1 1 0 0 0 0
-0 0 0 0 1 1 0 0 0 0
-0 0 0 0 1 1 0 0 0 0
-0 0 0 0 1 1 0 0 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
-10
-0 0 0 0 0 0 0 0 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 1 1 1 1 1 1 0 0
-0 0 0 0 0 1 1 0 0 0
-0 0 0 0 1 1 0 0 0 0
-0 0 0 0 1 1 0 0 0 0
-0 0 0 1 1 0 0 0 0 0
-0 0 1 1 1 1 1 1 0 0
-0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
-10
-0 0 0 0 0 0 0 0 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 0 0 0 0 1 1 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 0 0 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
-10
-0 0 0 0 0 0 0 0 0 0
-0 0 1 1 0 0 0 0 0 0
-0 0 1 1 1 1 1 1 0 0
-0 0 1 1 0 0 0 0 0 0
-0 0 1 1 1 1 1 0 0 0
-0 0 0 0 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
-10
-0 0 0 0 0 0 0 0 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 1 1 0 0 0 0 0 0
-0 0 1 1 0 0 0 0 0 0
-0 0 1 1 1 1 1 0 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
-10
-0 0 0 0 0 0 0 0 0 0
-0 0 1 1 1 1 1 1 0 0
-0 0 1 1 1 1 1 1 0 0
-0 0 0 0 0 0 1 1 0 0
-0 0 0 0 0 1 1 0 0 0
-0 0 0 0 1 1 0 0 0 0
-0 0 0 1 1 0 0 0 0 0
-0 0 1 1 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
-10
-0 0 0 0 0 0 0 0 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 1 1 0 0 1 1 0 0
-0 0 0 1 1 1 1 0 0 0
-0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0
+open output.txt
+dup2 0 1000000
+close 0
+open output2.txt
+dup2 0 100000
+close 0
+open 1.txt
+dup 100000
+query 1
+query 0

@@ -53,6 +53,7 @@
 + stl数据结构
 + 字节对齐，为什么需要字节对齐
 + 虚函数，多态
++ list size的复杂度（O(1)）
 + redis中的lru如何实现的
 + redis中为什么使用跳表不用红黑树
 + socket
@@ -60,7 +61,7 @@
 + HTTP讲一下
 + 粘包问题如何处理
 + HTTP层面如何处理粘包问题
-+ 101状态码知道吗
++ 101状态码知道吗（HTTP 101 Switching Protocol（协议切换）状态码表示服务器应客户端升级协议的请求对协议进行切换。）
 + socket使用TCP与UDP区别
 + 闭包，lambda原理，值传递还是引用传递
 + 如何优雅的写if-else、switch-case （表驱动法
