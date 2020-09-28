@@ -18,21 +18,28 @@ public:
 
 class Solution {
 public:
-    Node *copyRandomList(Node *head) {
-        unordered_map<Node *, Node *> mp;
-        Node *temp = head;
-        while (temp) {
-            mp[temp] = new Node(temp->val);
-            temp = temp->next;
+    bool isValid(string s) {
+        stack<char> st;
+        int len = s.size();
+        for (int i = 0; i < len; i++) {
+            if (st.empty() || s[i] == '(' || s[i] == '{' || s[i] == '[') st.push(s[i]);
+            else {
+                if (s[i] == ')') {
+                    if (st.top() != '(') return false;
+                    else st.pop();
+                }
+                if (s[i] == '}') {
+                    if (st.top() != '{') return false;
+                    else st.pop();
+                }
+                if (s[i] == ']') {
+                    if (st.top() != '[') return false;
+                    else st.pop();
+                }
+            }
         }
-        temp = head;
-        while (temp) {
-            Node *node = mp[temp];
-            node->next = mp[temp->next];
-            node->random = mp[temp->random];
-            temp = temp->next;
-        }
-        return mp[head];
+        if (st.empty()) return true;
+        return false;
     }
 };
 
