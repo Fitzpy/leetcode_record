@@ -2,14 +2,35 @@
 
 using namespace std;
 
-template<typename T>
-class My_Unique_ptr {
+struct ListNode {
+    int val;
+    ListNode *next;
+
+    ListNode() : val(0), next(nullptr) {}
+
+    ListNode(int x) : val(x), next(nullptr) {}
+
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+class Solution {
 public:
-    My_Unique_ptr(const T *ptr) : p(ptr) {};
+    void hanota(vector<int> &A, vector<int> &B, vector<int> &C) {
+        int n = A.size();
+        solve(n, A, B, C);
+    }
 
-private:
-
-    T *p;
+    void solve(int n, vector<int> &A, vector<int> &B, vector<int> &C) {
+        if (n == 1) {
+            C.push_back(A.back());
+            A.pop_back();
+            return;
+        }
+        solve(n - 1, A, C, B);
+        C.push_back(A.back());
+        A.pop_back();
+        solve(n - 1, B, A, C);
+    }
 };
 
 int main() {
