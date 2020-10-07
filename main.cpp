@@ -28,27 +28,33 @@ public:
 
 class Solution {
 public:
-    vector<vector<int>> threeSum(vector<int> &nums) {
-        vector<vector<int>> ans;
-        sort(nums.begin(), nums.end());
-        int n = nums.size();
-        for (int i = 0; i < n; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) continue;
-            int k = n - 1;
-            for (int j = i + 1; j < n; j++) {
-                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
-                while (j < k && nums[j] + nums[k] > -nums[i]) k--;
-                if (j == k) break;
-                if (nums[i] + nums[j] + nums[k] == 0) {
-                    ans.push_back({nums[i], nums[j], nums[k]});
+    int maxPoints(vector<vector<int>> &points) {
+        int ret = 0;
+        for (int i = 0; i < points.size(); i++) {
+            int num = 0, cur = 0;
+            unordered_map<string, int> mp;
+            for (int j = i + 1; j < points.size(); j++) {
+                if (points[j][0] == points[i][0] && points[j][1] == points[i][1]) {
+                    num++;
+                    continue;
                 }
+                int y = points[j][1] - points[i][1];
+                int x = points[j][0] - points[i][0];
+                int val = __gcd(x, y);
+                y /= val, x /= val;
+                if (y > 0 && x < 0) y = -y, x = -x;
+                string s = to_string(y) + '/' + to_string(x);
+                mp[s]++;
+                cur = max(cur, mp[s]);
             }
+            ret = max(ret, cur + num + 1);
         }
-        return ans;
+        return ret;
     }
 };
 
 int main() {
-
+    int num = -3, num1 = -6;
+    cout << to_string(num);
     return 0;
 }
