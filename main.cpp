@@ -28,22 +28,22 @@ public:
 
 class Solution {
 public:
-    vector<vector<int>> ans;
-    vector<int> cur;
-
-    void dfs(int depth, vector<int> &nums) {
-        if (depth == nums.size()) {
-            ans.push_back(cur);
-            return;
+    vector<vector<int>> threeSum(vector<int> &nums) {
+        vector<vector<int>> ans;
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int k = n - 1;
+            for (int j = i + 1; j < n; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+                while (j < k && nums[j] + nums[k] > -nums[i]) k--;
+                if (j == k) break;
+                if (nums[i] + nums[j] + nums[k] == 0) {
+                    ans.push_back({nums[i], nums[j], nums[k]});
+                }
+            }
         }
-        cur.push_back(nums[depth]);
-        dfs(depth + 1, nums);
-        cur.pop_back();
-        dfs(depth + 1, nums);
-    }
-
-    vector<vector<int>> subsets(vector<int> &nums) {
-        dfs(0, nums);
         return ans;
     }
 };
