@@ -1642,6 +1642,7 @@ public:
 ```
 ## 148. 排序链表
 ```
+### 迭代
 class Solution {
 public:
     ListNode *getNode(ListNode *head, int num) {
@@ -1696,6 +1697,33 @@ public:
             }
         }
         return ret->next;
+    }
+};
+### 递归
+class Solution {
+public:
+    ListNode *merge(ListNode *l1, ListNode *l2) {
+        if (l1 == NULL) return l2;
+        if (l2 == NULL) return l1;
+        if (l1->val <= l2->val) {
+            l1->next = merge(l1->next, l2);
+            return l1;
+        } else {
+            l2->next = merge(l1,l2->next);
+            return l2;
+        }
+    }
+
+    ListNode *sortList(ListNode *head) {
+        if (head == NULL || head->next == NULL) return head;
+        ListNode *cur = head, *pre = head, *tail = head;
+        while (tail && tail->next) {
+            pre = cur;
+            cur = cur->next;
+            tail = tail->next->next;
+        }
+        pre->next = NULL;
+        return merge(sortList(head), sortList(cur));
     }
 };
 ```
