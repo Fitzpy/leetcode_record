@@ -1640,3 +1640,62 @@ public:
     }
 };
 ```
+## 148. 排序链表
+```
+class Solution {
+public:
+    ListNode *getNode(ListNode *head, int num) {
+        if (head == NULL) return NULL;
+        ListNode *cur = head;
+        while (--num && cur) {
+            cur = cur->next;
+        }
+        if (cur == NULL) return cur;
+        ListNode *ret = cur->next;
+        cur->next = NULL;
+        return ret;
+    }
+
+    ListNode *merge(ListNode *l1, ListNode *l2) {
+        ListNode *ret = new ListNode(0);
+        ListNode *p = ret;
+        while (l1 && l2) {
+            if (l1->val < l2->val) {
+                p->next = l1;
+                l1 = l1->next;
+                p = p->next;
+            } else {
+                p->next = l2;
+                l2 = l2->next;
+                p = p->next;
+            }
+        }
+        p->next = l1 ? l1 : l2;
+        return ret->next;
+    }
+
+    ListNode *sortList(ListNode *head) {
+        if (head == NULL || head->next == NULL) return head;
+        ListNode *ret = new ListNode(0);
+        ret->next = head;
+        ListNode *cur = head;
+        int num = 0;
+        while (cur) {
+            num++;
+            cur = cur->next;
+        }
+        for (int i = 1; i < num; i *= 2) {
+            cur = ret->next;
+            ListNode *tail = ret;
+            while (cur) {
+                ListNode *left = cur;
+                ListNode *right = getNode(left, i);
+                cur = getNode(right, i);
+                tail->next = merge(left, right);
+                while (tail->next) tail = tail->next;
+            }
+        }
+        return ret->next;
+    }
+};
+```
