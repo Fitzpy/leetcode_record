@@ -148,21 +148,40 @@ void task2(int i, int j) {
 
 class Solution {
 public:
-    int longestCommonSubsequence(string text1, string text2) {
-        int n = text1.size(), m = text2.size();
-        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
-        int ret = 0;
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                if (text1[i - 1] == text2[j - 1]) {
-                    dp[i][j] = max(dp[i][j], dp[i - 1][j - 1] + 1);
-                } else {
-                    dp[i][j] = max(dp[i][j], max(dp[i - 1][j], dp[i][j - 1]));
-                }
-                //ret = max(ret, dp[i][j]);
+    bool check(string s) {
+        if (s.size() == 1) {
+            return true;
+        } else {
+            if (s[0] == '0') return false;
+            int num = 0;
+            for (char i : s) {
+                if (i >= '0' && i <= '9') num = num * 10 + i - '0';
+                else return false;
+                if (num > 255) return false;
             }
         }
-        return dp[n][m];
+        return true;
+    }
+
+    vector<string> restoreIpAddresses(string s) {
+        vector<string> ret;
+        int n = s.size();
+        for (int i = 0; i < n; i++) {
+            string s1 = s.substr(0, i + 1);
+            if (!check(s1)) continue;
+            for (int j = i + 1; j < n; j++) {
+                string s2 = s.substr(i + 1, j - i);
+                if (!check(s2)) continue;
+                for (int k = j + 1; k < n; k++) {
+                    string s3 = s.substr(j + 1, k - j);
+                    if (!check(s3)) continue;
+                    string s4 = s.substr(k + 1, n - k);
+                    if (!check(s3)) continue;
+                    ret.push_back(s1 + '.' + s2 + '.' + s3 + '.' + s4);
+                }
+            }
+        }
+        return ret;
     }
 };
 
