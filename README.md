@@ -1727,3 +1727,62 @@ public:
     }
 };
 ```
+## 297. 二叉树的序列化与反序列化
+```
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode *root) {
+        string ret;
+        if (root == NULL) return ret;
+        queue<TreeNode *> que;
+        que.push(root);
+        while (!que.empty()) {
+            TreeNode *now = que.front();
+            que.pop();
+            if (now != NULL) {
+                ret += to_string(now->val);
+                que.push(now->left);
+                que.push(now->right);
+            } else ret += "null";
+            ret += ',';
+        }
+        return ret;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode *deserialize(string data) {
+        if (data.size() <= 2) return NULL;
+        vector<string> cur;
+        int len = 0, n = data.size();
+        for (int i = 0; i < n; i++) {
+            if (data[i] == ',') {
+                cur.push_back(data.substr(i - len, len));
+                len = 0;
+            } else len++;
+        }
+        if (cur[0] == "null") return NULL;
+        queue<TreeNode *> que;
+        TreeNode *root = new TreeNode(stoi(cur[0]));
+        TreeNode *temp = root;
+        que.push(temp);
+        int idx = 0;
+        while (!que.empty()) {
+            TreeNode *now = que.front();
+            que.pop();
+            if (++idx >= cur.size()) break;
+            if (cur[idx] != "null") {
+                now->left = new TreeNode(stoi(cur[idx]));
+                que.push(now->left);
+            }
+            if (++idx >= cur.size()) break;
+            if (cur[idx] != "null") {
+                now->right = new TreeNode(stoi(cur[idx]));
+                que.push(now->right);
+            }
+        }
+        return root;
+    }
+};
+```

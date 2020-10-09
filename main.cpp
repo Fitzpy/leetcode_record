@@ -146,30 +146,69 @@ struct ListNode {
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
-class Solution {
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class Codec {
 public:
-    ListNode *merge(ListNode *l1, ListNode *l2) {
-        if (l1 == NULL) return l2;
-        if (l2 == NULL) return l1;
-        if (l1->val <= l2->val) {
-            l1->next = merge(l1->next, l2);
-            return l1;
-        } else {
-            l2->next = merge(l1, l2->next);
-            return l2;
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode *root) {
+        string ret;
+        if (root == NULL) return ret;
+        queue<TreeNode *> que;
+        que.push(root);
+        while (!que.empty()) {
+            TreeNode *now = que.front();
+            que.pop();
+            if (now != NULL) {
+                ret += to_string(now->val);
+                que.push(now->left);
+                que.push(now->right);
+            } else ret += "null";
+            ret += ',';
         }
+        return ret;
     }
 
-    ListNode *sortList(ListNode *head) {
-        if (head == NULL || head->next == NULL) return head;
-        ListNode *cur = head, *pre = head, *tail = head;
-        while (tail && tail->next) {
-            pre = cur;
-            cur = cur->next;
-            tail = tail->next->next;
+    // Decodes your encoded data to tree.
+    TreeNode *deserialize(string data) {
+        if (data.size() <= 2) return NULL;
+        vector<string> cur;
+        int len = 0, n = data.size();
+        for (int i = 0; i < n; i++) {
+            if (data[i] == ',') {
+                cur.push_back(data.substr(i - len, len));
+                len = 0;
+            } else len++;
         }
-        pre->next = NULL;
-        return merge(sortList(head), sortList(cur));
+        if (cur[0] == "null") return NULL;
+        queue<TreeNode *> que;
+        TreeNode *root = new TreeNode(stoi(cur[0]));
+        TreeNode *temp = root;
+        que.push(temp);
+        int idx = 0;
+        while (!que.empty()) {
+            TreeNode *now = que.front();
+            que.pop();
+            if (++idx >= cur.size()) break;
+            if (cur[idx] != "null") {
+                now->left = new TreeNode(stoi(cur[idx]));
+                que.push(now->left);
+            }
+            if (++idx >= cur.size()) break;
+            if (cur[idx] != "null") {
+                now->right = new TreeNode(stoi(cur[idx]));
+                que.push(now->right);
+            }
+        }
+        return root;
     }
 };
 
