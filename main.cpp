@@ -1,59 +1,30 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <mutex>
+#include <thread>
+#include <condition_variable>
 
 using namespace std;
 
-class MinStack {
-public:
-    /** initialize your data structure here. */
-    MinStack() {
-        while (!st.empty())st.pop();
-        while (!st1.empty()) st1.pop();
-    }
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
 
-    void push(int x) {
-        st.push(x);
-        if (st1.empty()) st1.push(x);
-        else {
-            st1.push(min(st1.top(), x));
-        }
-    }
-
-    void pop() {
-        st.pop();
-        st1.pop();
-    }
-
-    int top() {
-        return st.top();
-    }
-
-    int getMin() {
-        return st1.top();
-    }
-
-private:
-    stack<int> st;
-    stack<int> st1;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
-/**
- * Your MinStack object will be instantiated and called as such:
- * MinStack* obj = new MinStack();
- * obj->push(x);
- * obj->pop();
- * int param_3 = obj->top();
- * int param_4 = obj->getMin();
- */
+class Solution {
+public:
+    TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q) {
+        if (root == NULL) return root;
+        if (root == p || root == q) return root;
+        TreeNode *left = lowestCommonAncestor(root->left, p, q);
+        TreeNode *right = lowestCommonAncestor(root->right, p, q);
+        return left ? left : right;
+    }
+};
 
 int main() {
-    MinStack minStack;
-    minStack.push(-2);
-    minStack.push(0);
-    minStack.push(-3);
-    minStack.getMin();  // --> ·µ»Ø -3.
-    minStack.pop();
-    minStack.top();     // --> ·µ»Ø 0.
-    minStack.getMin();  // --> ·µ»Ø -2.
 
     return 0;
 }

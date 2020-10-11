@@ -1879,3 +1879,17 @@ private:
     stack<int> st1;
 };
 ```
+## 剑指 Offer 68 - II. 二叉树的最近公共祖先
+```
+class Solution {
+public:
+    TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q) {
+        if (root == NULL) return root;
+        if (root == p || root == q) return root;
+        TreeNode *left = lowestCommonAncestor(root->left, p, q);
+        TreeNode *right = lowestCommonAncestor(root->right, p, q);
+        if (left && right) return root;
+        return left ? left : right;
+    }
+};
+```
