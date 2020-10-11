@@ -2,35 +2,58 @@
 
 using namespace std;
 
-class Solution {
+class MinStack {
 public:
-    string removeDuplicates(string s, int k) {
-        int n = s.size();
-        stack<pair<char, int>> st;
-        for (int i = 0; i < n; i++) {
-            if (st.empty()) {
-                st.push(make_pair(s[i], 1));
-            } else {
-                if (st.top().first == s[i]) {
-                    if (st.top().second == k - 1) {
-                        while (!st.empty() && st.top().first == s[i]) st.pop();
-                    } else st.push(make_pair(s[i], st.top().second + 1));
-                } else {
-                    st.push(make_pair(s[i], 1));
-                }
-            }
-        }
-        string ret;
-        while (!st.empty()) {
-            ret += st.top().first;
-            st.pop();
-        }
-        reverse(ret.begin(), ret.end());
-        return ret;
+    /** initialize your data structure here. */
+    MinStack() {
+        while (!st.empty())st.pop();
+        while (!st1.empty()) st1.pop();
     }
+
+    void push(int x) {
+        st.push(x);
+        if (st1.empty()) st1.push(x);
+        else {
+            st1.push(min(st1.top(), x));
+        }
+    }
+
+    void pop() {
+        st.pop();
+        st1.pop();
+    }
+
+    int top() {
+        return st.top();
+    }
+
+    int getMin() {
+        return st1.top();
+    }
+
+private:
+    stack<int> st;
+    stack<int> st1;
 };
 
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(x);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */
+
 int main() {
+    MinStack minStack;
+    minStack.push(-2);
+    minStack.push(0);
+    minStack.push(-3);
+    minStack.getMin();  // --> ·µ»Ø -3.
+    minStack.pop();
+    minStack.top();     // --> ·µ»Ø 0.
+    minStack.getMin();  // --> ·µ»Ø -2.
 
     return 0;
 }
