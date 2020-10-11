@@ -12,23 +12,27 @@ struct TreeNode {
 
 class Solution {
 public:
-    unordered_map<int, int> mp;
-
-    TreeNode *solve(vector<int> &pre, vector<int> &post, int L1, int R1, int L2, int R2) {
-        if (L1 > R1 || L2 > R2) return NULL;
-        TreeNode *head = new TreeNode(pre[L1]);
-        if (L1 == R1) return head;
-        int pos = mp[pre[L1 + 1]];
-        int len = pos - L2 + 1;
-        head->left = solve(pre, post, L1 + 1, L1 + len, L2, pos);
-        head->right = solve(pre, post, L1 + len + 1, R1, pos + 1, R2 - 1);
-        return head;
+    int depth(TreeNode *root) {
+        if (root == NULL) return 0;
+        int L = depth(root->left);
+        int R = depth(root->right);
+        return max(L, R) + 1;
     }
 
-    TreeNode *constructFromPrePost(vector<int> &pre, vector<int> &post) {
-        int n = pre.size();
-        for (int i = 0; i < n; i++) mp[post[i]] = i;
-        return solve(pre, post, 0, n - 1, 0, n - 1);
+    vector<vector<int>> levelOrder(TreeNode *root) {
+        int dep = depth(root);
+        vector<vector<int>> ret(dep);
+        if (root == NULL) return ret;
+        queue<pair<TreeNode *, int>> que;
+        que.push(make_pair(root, 0));
+        while (!que.empty()) {
+            pair<TreeNode *, int> now = que.front();
+            que.pop();
+            ret[now.second].push_back(now.first->val);
+            if (now.first->left != NULL) que.push(make_pair(now.first->left, now.second + 1));
+            if (now.first->right != NULL) que.push(make_pair(now.first->right, now.second + 1));
+        }
+        return ret;
     }
 };
 
