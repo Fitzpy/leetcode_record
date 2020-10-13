@@ -2,25 +2,49 @@
 
 using namespace std;
 
+struct ListNode {
+    int val;
+    ListNode *next;
+
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
 class Solution {
 public:
-    vector<double> medianSlidingWindow(vector<int> &nums, int k) {
-        int n = nums.size();
-        multiset<int> st;
-        for (int i = 0; i < k; i++) st.insert(nums[i]);
-        multiset<int>::iterator it = next(st.begin(), k / 2);
-        vector<double> ret;
-        for (int i = k;; i++) {
-            ret.push_back((1.0 * (*it) + *(next(it, k % 2 - 1))) * 0.5);
-            if (i == nums.size()) break;
-            st.insert(nums[i]);
-            if (nums[i] < (*it)) it--;
-            if (nums[i - k] <= (*it)) it++;
-            st.erase(st.lower_bound(nums[i - k]));
+
+    pair<ListNode *, ListNode *> solve(ListNode *head, ListNode *tail) {
+        ListNode *cur = head;
+        ListNode *ret = tail->next;
+        while (cur!=tail) {
+            ListNode *temp = cur->next;
+            cur->next = ret;
+            ret = cur;
+            cur = temp;
         }
-        return ret;
+        return make_pair(tail, head);
     }
-} solve;
+
+    ListNode *reverseKGroup(ListNode *head, int k) {
+        int num = 0;
+        ListNode *hair = new ListNode(0);
+        hair->next = head;
+        ListNode *cur = head, *pre = hair;
+        while (cur) {
+            num++;
+            if (num == k) {
+                pair<ListNode *, ListNode *> ret = solve(pre->next, cur);
+                printf("%d %d\n",ret.first->val,ret.second->val);
+                pre->next = ret.first;
+                cur = ret.second->next;
+                pre = ret.second;
+                num = 0;
+            } else {
+                cur = cur->next;
+            }
+        }
+        return hair->next;
+    }
+};
 
 int main() {
     vector<int> in;
