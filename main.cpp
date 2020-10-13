@@ -2,58 +2,26 @@
 
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode *next;
-
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
 class Solution {
 public:
-
-    pair<ListNode *, ListNode *> solve(ListNode *head, ListNode *tail) {
-        ListNode *cur = head;
-        ListNode *ret = tail->next;
-        while (cur!=tail) {
-            ListNode *temp = cur->next;
-            cur->next = ret;
-            ret = cur;
-            cur = temp;
-        }
-        return make_pair(tail, head);
-    }
-
-    ListNode *reverseKGroup(ListNode *head, int k) {
-        int num = 0;
-        ListNode *hair = new ListNode(0);
-        hair->next = head;
-        ListNode *cur = head, *pre = hair;
-        while (cur) {
-            num++;
-            if (num == k) {
-                pair<ListNode *, ListNode *> ret = solve(pre->next, cur);
-                printf("%d %d\n",ret.first->val,ret.second->val);
-                pre->next = ret.first;
-                cur = ret.second->next;
-                pre = ret.second;
-                num = 0;
-            } else {
-                cur = cur->next;
+    int numDecodings(string s) {
+        int n = s.size();
+        vector<int> dp(n + 1, 0);
+        dp[0] = 1;
+        for (int i = 0; i < n; i++) {
+            if (s[i] != '0') dp[i + 1] += dp[i];
+            if (i > 0 && s[i - 1] != '0') {
+                int num = (s[i] - '0') + (s[i - 1] - '0') * 10;
+                if (num <= 26 && num > 0) {
+                    dp[i + 1] += dp[i - 1];
+                }
             }
         }
-        return hair->next;
+        return dp[n];
     }
 };
 
 int main() {
-    vector<int> in;
-    int n = 8, k = 3;
-    for (int i = 0; i < n; i++) {
-        int x;
-        scanf("%d", &x);
-        in.push_back(x);
-    }
-    solve.medianSlidingWindow(in, k);
+
     return 0;
 }
