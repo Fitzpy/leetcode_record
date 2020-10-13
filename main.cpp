@@ -2,41 +2,34 @@
 
 using namespace std;
 
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
 class Solution {
 public:
-    int depth(TreeNode *root) {
-        if (root == NULL) return 0;
-        int L = depth(root->left);
-        int R = depth(root->right);
-        return max(L, R) + 1;
-    }
-
-    vector<vector<int>> levelOrder(TreeNode *root) {
-        int dep = depth(root);
-        vector<vector<int>> ret(dep);
-        if (root == NULL) return ret;
-        queue<pair<TreeNode *, int>> que;
-        que.push(make_pair(root, 0));
-        while (!que.empty()) {
-            pair<TreeNode *, int> now = que.front();
-            que.pop();
-            ret[now.second].push_back(now.first->val);
-            if (now.first->left != NULL) que.push(make_pair(now.first->left, now.second + 1));
-            if (now.first->right != NULL) que.push(make_pair(now.first->right, now.second + 1));
+    vector<double> medianSlidingWindow(vector<int> &nums, int k) {
+        int n = nums.size();
+        multiset<int> st;
+        for (int i = 0; i < k; i++) st.insert(nums[i]);
+        multiset<int>::iterator it = next(st.begin(), k / 2);
+        vector<double> ret;
+        for (int i = k;; i++) {
+            ret.push_back((1.0 * (*it) + *(next(it, k % 2 - 1))) * 0.5);
+            if (i == nums.size()) break;
+            st.insert(nums[i]);
+            if (nums[i] < (*it)) it--;
+            if (nums[i - k] <= (*it)) it++;
+            st.erase(st.lower_bound(nums[i - k]));
         }
         return ret;
     }
-};
+} solve;
 
 int main() {
-
+    vector<int> in;
+    int n = 8, k = 3;
+    for (int i = 0; i < n; i++) {
+        int x;
+        scanf("%d", &x);
+        in.push_back(x);
+    }
+    solve.medianSlidingWindow(in, k);
     return 0;
 }

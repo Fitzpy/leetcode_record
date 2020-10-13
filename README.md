@@ -1946,3 +1946,25 @@ public:
 };
 
 ```
+## 480. 滑动窗口中位数
+```
+class Solution {
+public:
+    vector<double> medianSlidingWindow(vector<int> &nums, int k) {
+        int n = nums.size();
+        multiset<int> st;
+        for (int i = 0; i < k; i++) st.insert(nums[i]);
+        multiset<int>::iterator it = next(st.begin(), k / 2);
+        vector<double> ret;
+        for (int i = k;; i++) {
+            ret.push_back((1.0 * (*it) + *(next(it, k % 2 - 1))) * 0.5);
+            if (i == nums.size()) break;
+            st.insert(nums[i]);
+            if (nums[i] < (*it)) it--;
+            if (nums[i - k] <= (*it)) it++;
+            st.erase(st.lower_bound(nums[i - k]));
+        }
+        return ret;
+    }
+} solve;
+```
