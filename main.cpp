@@ -2,36 +2,23 @@
 
 using namespace std;
 
-class ProductOfNumbers {
+class Solution {
 public:
-    int pre[100010];
-    int len;
-
-    ProductOfNumbers() {
-        pre[0] = 1;
-        len = 0;
-    }
-
-    void add(int num) {
-        if (!num) len = 0;
-        else {
-            len++;
-            pre[len] = num * pre[len - 1];
+    void nextPermutation(vector<int> &nums) {
+        int pos = nums.size() - 2;
+        while (pos >= 0 && nums[pos + 1] <= nums[pos]) pos--;
+        if (pos >= 0) {
+            for (int i = nums.size() - 1; i >= 0; i--) {
+                if (nums[i] > nums[pos]) {
+                    swap(nums[i], nums[pos]);
+                    break;
+                }
+            }
         }
-    }
-
-    int getProduct(int k) {
-        if (len < k) return 0;
-        return pre[len] / pre[len - k];
+        reverse(next(nums.begin(), pos + 1), nums.end());
     }
 };
 
-/**
- * Your ProductOfNumbers object will be instantiated and called as such:
- * ProductOfNumbers* obj = new ProductOfNumbers();
- * obj->add(num);
- * int param_2 = obj->getProduct(k);
- */
 int main() {
 
     return 0;
