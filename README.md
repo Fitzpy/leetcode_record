@@ -2138,3 +2138,26 @@ public:
     }
 };
 ```
+## 300. 最长上升子序列
+```
+class Solution {
+public:
+    int dp[100010];
+
+    int lengthOfLIS(vector<int> &nums) {
+        int n = nums.size();
+        if (!n) return 0;
+        int len = 0;
+        dp[len++] = nums[0];
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > dp[len - 1]) {
+                dp[len++] = nums[i];
+            } else {
+                int pos = lower_bound(dp, dp + len, nums[i]) - dp;
+                dp[pos] = nums[i];
+            }
+        }
+        return len;
+    }
+};
+```
