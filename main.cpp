@@ -15,23 +15,19 @@ struct ListNode {
 
 class Solution {
 public:
-    bool isInterleave(string s1, string s2, string s3) {
-        int len1 = s1.size(), len2 = s2.size(), len3 = s3.size();
-        if (len1 + len2 != len3) return false;
-        vector<vector<int>> dp(len1 + 1, vector<int>(len2 + 1, 0));
-        dp[0][0] = 1;
-        for (int i = 0; i <= len1; i++) {
-            for (int j = 0; j <= len2; j++) {
-                int pos = i + j - 1;
-                if (i > 0) {
-                    dp[i][j] |= (dp[i - 1][j] && (s1[i - 1] == s3[pos]));
-                }
-                if (j > 0) {
-                    dp[i][j] |= (dp[i][j - 1] && (s2[j - 1] == s3[pos]));
-                }
-            }
+    ListNode *oddEvenList(ListNode *head) {
+        if (head == NULL) return head;
+        ListNode *odd = head;
+        ListNode *even = head->next;
+        ListNode *evenHead = even;
+        while (even && even->next) {
+            odd->next = even->next;
+            odd = odd->next;
+            even->next = odd->next;
+            even = even->next;
         }
-        return bool(dp[len1][len2]);
+        odd->next = evenHead;
+        return head;
     }
 };
 
