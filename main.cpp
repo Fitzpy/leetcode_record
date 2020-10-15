@@ -15,23 +15,36 @@ struct ListNode {
 
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        map<char, int> mp;
-        int len = s.size();
-        int l = 0, r = 0, ans = 0;
-        while (r < len) {
-            if (mp[s[r]] == 1) {
-                while (mp[s[r]] == 1) {
-                    mp[s[l]]--;
-                    l++;
-                }
-                mp[s[r]] = 1;
+    pair<ListNode *, ListNode *> solve(ListNode *head, ListNode *tail) {
+        ListNode *ret = tail->next;
+        ListNode *cur = head;
+        while (ret != tail) {
+            ListNode *temp = head->next;
+            cur->next = ret;
+            ret = cur;
+            cur = temp;
+        }
+        return make_pair(tail, head);
+    }
+
+    ListNode *swapPairs(ListNode *head) {
+        ListNode *hair = new ListNode(0);
+        hair->next = head;
+        ListNode *cur = head, *pre = hair;
+        int num = 0;
+        while (cur) {
+            num++;
+            if (num == 2) {
+                auto ret = solve(pre->next, cur);
+                pre->next = ret.first;
+                pre = ret.second;
+                cur = ret.second->next;
+                num = 0;
             } else {
-                mp[s[r]] = 1;
-                ans = max(ans, r - l + 1);
+                cur = cur->next;
             }
         }
-        return ans;
+        return hair->next;
     }
 };
 
