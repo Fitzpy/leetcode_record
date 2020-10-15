@@ -2186,3 +2186,44 @@ public:
     }
 };
 ```
+## 剑指 Offer 51. 数组中的逆序对
+```
+class Solution {
+public:
+    int ans = 0;
+
+    void merge(vector<int> &nums, int L1, int R1, int L2, int R2) {
+        if (L1 > R1 || L2 > R2) return;
+        int temp[R2 - L1 + 1];
+        int i = L1, j = L2, pos = 0;
+        while (i <= R1 && j <= R2) {
+            if (nums[i] <= nums[j]) {
+                temp[pos++] = nums[i++];
+            } else {
+                ans += R1 - i + 1;
+                temp[pos++] = nums[j++];
+            }
+        }
+        while (i <= R1) temp[pos++] = nums[i++];
+        while (j <= R2) temp[pos++] = nums[j++];
+        for (int i = L1; i <= R2; i++) {
+            nums[i] = temp[i - L1];
+        }
+    }
+
+    void mergeSort(vector<int> &nums, int L, int R) {
+        if (L >= R) return;
+        int mid = (L + R) / 2;
+        mergeSort(nums, L, mid);
+        mergeSort(nums, mid + 1, R);
+        merge(nums, L, mid, mid + 1, R);
+    }
+
+    int reversePairs(vector<int> &nums) {
+        int n = nums.size();
+        ans = 0;
+        mergeSort(nums, 0, n - 1);
+        return ans;
+    }
+};
+```
