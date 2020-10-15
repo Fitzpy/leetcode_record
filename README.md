@@ -2265,3 +2265,41 @@ public:
     }
 };
 ```
+## 34. 在排序数组中查找元素的第一个和最后一个位置
+```
+class Solution {
+public:
+    vector<int> searchRange(vector<int> &nums, int target) {
+        int low = 0, high = nums.size() - 1;
+        vector<int> ret;
+        if (nums.size() == 0) {
+            ret.push_back(-1);
+            ret.push_back(-1);
+            return ret;
+        }
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (nums[mid] < target) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        if (low == nums.size() || nums[low] != target) low = -1;
+        ret.push_back(low);
+        low = 0, high = nums.size() - 1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (nums[mid] <= target) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        if (high < 0 || nums[high] != target) high = -1;
+        ret.push_back(high);
+        return ret;
+    }
+};
+
+```

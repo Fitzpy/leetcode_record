@@ -15,36 +15,37 @@ struct ListNode {
 
 class Solution {
 public:
-    pair<ListNode *, ListNode *> solve(ListNode *head, ListNode *tail) {
-        ListNode *ret = tail->next;
-        ListNode *cur = head;
-        while (ret != tail) {
-            ListNode *temp = head->next;
-            cur->next = ret;
-            ret = cur;
-            cur = temp;
+    vector<int> searchRange(vector<int> &nums, int target) {
+        int low = 0, high = nums.size() - 1;
+        vector<int> ret;
+        if (nums.size() == 0) {
+            ret.push_back(-1);
+            ret.push_back(-1);
+            return ret;
         }
-        return make_pair(tail, head);
-    }
-
-    ListNode *swapPairs(ListNode *head) {
-        ListNode *hair = new ListNode(0);
-        hair->next = head;
-        ListNode *cur = head, *pre = hair;
-        int num = 0;
-        while (cur) {
-            num++;
-            if (num == 2) {
-                auto ret = solve(pre->next, cur);
-                pre->next = ret.first;
-                pre = ret.second;
-                cur = ret.second->next;
-                num = 0;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (nums[mid] < target) {
+                low = mid + 1;
             } else {
-                cur = cur->next;
+                high = mid - 1;
             }
         }
-        return hair->next;
+        printf("low = %d\n", low);
+        if (low == nums.size() || nums[low] != target) low = -1;
+        ret.push_back(low);
+        low = 0, high = nums.size() - 1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (nums[mid] <= target) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        if (high < 0 || nums[high] != target) high = -1;
+        ret.push_back(high);
+        return ret;
     }
 };
 
