@@ -2161,3 +2161,28 @@ public:
     }
 };
 ```
+## 3. 无重复字符的最长子串
+```
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        map<char, int> mp;
+        int len = s.size();
+        int l = 0, r = 0, ans = 0;
+        while (r < len) {
+            if (mp[s[r]] == 1) {
+                while (mp[s[r]] == 1) {
+                    mp[s[l]]--;
+                    l++;
+                }
+                mp[s[r]] = 1;
+            } else {
+                mp[s[r]] = 1;
+                ans = max(ans, r - l + 1);
+            }
+            r++;
+        }
+        return ans;
+    }
+};
+```

@@ -2,24 +2,36 @@
 
 using namespace std;
 
-//10,9,2,5,3,7,101,18
+struct ListNode {
+    int val;
+    ListNode *next;
+
+    ListNode() : val(0), next(nullptr) {}
+
+    ListNode(int x) : val(x), next(nullptr) {}
+
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
 class Solution {
 public:
-    int dp[100010];
-
-    int lengthOfLIS(vector<int> &nums) {
-        int n = nums.size();
-        int len = 0;
-        dp[len++] = nums[0];
-        for (int i = 1; i < n; i++) {
-            if (nums[i] > dp[len - 1]) {
-                dp[len++] = nums[i];
+    int lengthOfLongestSubstring(string s) {
+        map<char, int> mp;
+        int len = s.size();
+        int l = 0, r = 0, ans = 0;
+        while (r < len) {
+            if (mp[s[r]] == 1) {
+                while (mp[s[r]] == 1) {
+                    mp[s[l]]--;
+                    l++;
+                }
+                mp[s[r]] = 1;
             } else {
-                int pos = lower_bound(dp, dp + len, nums[i]) - dp;
-                dp[pos] = nums[i];
+                mp[s[r]] = 1;
+                ans = max(ans, r - l + 1);
             }
         }
-        return len;
+        return ans;
     }
 };
 
