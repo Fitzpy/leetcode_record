@@ -2,54 +2,45 @@
 
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode *next;
+char s[10010];
+struct node {
+    char ch;
+    int num;
+} qu[10010];
 
-    ListNode() : val(0), next(nullptr) {}
+int cmp(node a, node b) {
+    if (a.num == b.num) return a.ch < b.ch;
+    return a.num > b.num;
+}
 
-    ListNode(int x) : val(x), next(nullptr) {}
-
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
-class Solution {
-public:
-    vector<int> searchRange(vector<int> &nums, int target) {
-        int low = 0, high = nums.size() - 1;
-        vector<int> ret;
-        if (nums.size() == 0) {
-            ret.push_back(-1);
-            ret.push_back(-1);
-            return ret;
-        }
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            if (nums[mid] < target) {
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
-        }
-        printf("low = %d\n", low);
-        if (low == nums.size() || nums[low] != target) low = -1;
-        ret.push_back(low);
-        low = 0, high = nums.size() - 1;
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            if (nums[mid] <= target) {
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
-        }
-        if (high < 0 || nums[high] != target) high = -1;
-        ret.push_back(high);
-        return ret;
-    }
-};
+int check(char ch) {
+    if (ch >= 'a' && ch <= 'z') return 1;
+    if (ch >= 'A' && ch <= 'Z') return 1;
+    if (ch >= '0' && ch <= '9') return 1;
+    if (ch == ' ') return 1;
+    return 0;
+}
 
 int main() {
-
+    while (gets(s)) {
+        int n = strlen(s);
+        map<char, int> mp;
+        mp.clear();
+        for (int i = 0; i < n; i++) {
+            if (check(s[i])) mp[s[i]]++;
+        }
+        int len = 0;
+        for (auto it = mp.begin(); it != mp.end(); it++) {
+            // cout << it->first << " " << it->second;
+            qu[len].ch = it->first;
+            qu[len].num = it->second;
+            len++;
+        }
+        sort(qu, qu + len, cmp);
+        for (int i = 0; i < len; i++) {
+            printf("%c", qu[i].ch);
+        }
+        printf("\n");
+    }
     return 0;
 }
