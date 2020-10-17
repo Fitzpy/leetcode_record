@@ -2,45 +2,36 @@
 
 using namespace std;
 
-char s[10010];
-struct node {
-    char ch;
-    int num;
-} qu[10010];
+class Solution {
+public:
+    string multiply(string num1, string num2) {
+        int len1 = num1.size(), len2 = num2.size();
+        vector<int> num(len1 + len2 + 10, 0);
+        reverse(num1.begin(), num1.end());
+        reverse(num2.begin(), num2.end());
+        for (int i = 0; i < len1; i++) {
+            for (int j = 0; j < len2; j++) {
+                int pos = i + j;
+                num[pos] += (num1[i] - '0') * (num2[j] - '0');
+            }
+        }
 
-int cmp(node a, node b) {
-    if (a.num == b.num) return a.ch < b.ch;
-    return a.num > b.num;
-}
-
-int check(char ch) {
-    if (ch >= 'a' && ch <= 'z') return 1;
-    if (ch >= 'A' && ch <= 'Z') return 1;
-    if (ch >= '0' && ch <= '9') return 1;
-    if (ch == ' ') return 1;
-    return 0;
-}
+        int res = 0;
+        for (int i = 0; i < len1 + len2 + 1; i++) {
+            num[i] += res;
+            res = num[i] / 10;
+            num[i] %= 10;
+        }
+        string ret;
+        int pos = len1 + len2 + 1;
+        while (pos >= 0 && num[pos] == 0) pos--;
+        if (pos < 0) ret += '0';
+        for (int i = pos; i >= 0; i--) ret += num[i] + '0';
+        return ret;
+    }
+};
 
 int main() {
-    while (gets(s)) {
-        int n = strlen(s);
-        map<char, int> mp;
-        mp.clear();
-        for (int i = 0; i < n; i++) {
-            if (check(s[i])) mp[s[i]]++;
-        }
-        int len = 0;
-        for (auto it = mp.begin(); it != mp.end(); it++) {
-            // cout << it->first << " " << it->second;
-            qu[len].ch = it->first;
-            qu[len].num = it->second;
-            len++;
-        }
-        sort(qu, qu + len, cmp);
-        for (int i = 0; i < len; i++) {
-            printf("%c", qu[i].ch);
-        }
-        printf("\n");
-    }
+
     return 0;
 }
