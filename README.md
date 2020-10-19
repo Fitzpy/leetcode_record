@@ -2430,6 +2430,38 @@ public:
     }
 };
 ```
+
+## 496. 下一个更大元素 I
+```
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int> &nums1, vector<int> &nums2) {
+        int n = nums2.size();
+        vector<int> L(10010, 0);
+        stack<int> st;
+        for (int i = 0; i < n; i++) {
+            if (st.empty()) st.push(nums2[i]);
+            else {
+                while (!st.empty() && st.top() <= nums2[i]) {
+                    L[st.top()] = nums2[i];
+                    st.pop();
+                }
+                st.push(nums2[i]);
+            }
+        }
+        while (!st.empty()) {
+            L[st.top()] = -1;
+            st.pop();
+        }
+        vector<int> ret;
+        for (int i = 0; i < nums1.size(); i++) {
+            ret.push_back(L[nums1[i]]);
+        }
+        return ret;
+    }
+};
+```
+
 ## 503. 下一个更大元素 II
 ```
 class Solution {
