@@ -2,36 +2,82 @@
 
 using namespace std;
 
-class Solution {
+class ThreadPool {
 public:
-    string multiply(string num1, string num2) {
-        int len1 = num1.size(), len2 = num2.size();
-        vector<int> num(len1 + len2 + 10, 0);
-        reverse(num1.begin(), num1.end());
-        reverse(num2.begin(), num2.end());
-        for (int i = 0; i < len1; i++) {
-            for (int j = 0; j < len2; j++) {
-                int pos = i + j;
-                num[pos] += (num1[i] - '0') * (num2[j] - '0');
-            }
-        }
+    ThreadPool(int threadNum, int queueSize);
 
-        int res = 0;
-        for (int i = 0; i < len1 + len2 + 1; i++) {
-            num[i] += res;
-            res = num[i] / 10;
-            num[i] %= 10;
-        }
-        string ret;
-        int pos = len1 + len2 + 1;
-        while (pos >= 0 && num[pos] == 0) pos--;
-        if (pos < 0) ret += '0';
-        for (int i = pos; i >= 0; i--) ret += num[i] + '0';
-        return ret;
-    }
+    template<class F, class ...Args>
+    void push(F &&f, Args ...args);
+
+    ~ThreadPool();
+
+private:
+    bool stop;
+    int size;
+    mutex mutex;
+    condition_variable produce, consume;
+    vector<thread> workers;
+    queue<function<void()>> tasks;
 };
 
-int main() {
+ThreadPool::ThreadPool(int threadNum, int queueSize) : stop(false), size(queueSize) {
+    for (int i = 0; i < threadNum; i++) {
+        workers.emplace_back([this] {
+            for (;;) {
+                function<void()> task;
+                {
+                    unique_lock<std::mutex> lock1(mutex);
+                    consume.wait(lock1, [this] {
+                        return this->stop || !this->tasks.empty();
+                    });
+                    if (this->stop && this->tasks.empty()) return;
+                    task = move(this->tasks.front());
+                    this->tasks.pop();
+                    produce.notify_one();
+                }
+                task();
+            }
+        });
+    }
+}
 
+template<class F, class ...Args>
+void ThreadPool::push(F &&f, Args ...args) {
+    auto task = bind(f, args...);
+    {
+        unique_lock<std::mutex> lock1(mutex);
+        produce.wait(lock1, [this] {
+            return tasks.size() != size;
+        });
+        tasks.push(task);
+    }
+    consume.notify_one();
+}
+
+ThreadPool::~ThreadPool() {
+    {
+        unique_lock<std::mutex> lock1(mutex);
+        stop = true;
+    }
+    consume.notify_all();
+    for (thread &worker:workers) {
+        worker.join();
+    }
+}
+
+void the_task(int i) {
+    printf("worker thread ID: = %d i = %d\n", std::this_thread::get_id(), i);
+}
+
+int main() {
+    ThreadPool pool(2, 4);
+    pool.push(the_task, 1);
+    pool.push(the_task, 2);
+    pool.push(the_task, 3);
+    pool.push(the_task, 4);
+    pool.push(the_task, 5);
+    pool.push(the_task, 6);
+    pool.push(the_task, 7);
+    pool.push(the_task, 8);
     return 0;
 }
