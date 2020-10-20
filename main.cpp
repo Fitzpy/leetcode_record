@@ -4,15 +4,17 @@ using namespace std;
 
 class Solution {
 public:
-    int minArray(vector<int> &numbers) {
-        int low = 0, high = numbers.size() - 1;
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            if (numbers[mid] > numbers[high]) low = mid + 1;
-            else if (numbers[mid] < numbers[high]) high = mid;
-            else high--;
+    int canCompleteCircuit(vector<int> &gas, vector<int> &cost) {
+        int sum = 0, cur = 0, pos = -1;
+        for (int i = 0; i < gas.size(); i++) {
+            sum += gas[i] - cost[i];
+            cur += gas[i] - cost[i];
+            if (cur < 0) {
+                pos = i + 1;
+                cur = 0;
+            }
         }
-        return numbers[low];
+        return sum >= 0 ? pos : -1;
     }
 };
 
