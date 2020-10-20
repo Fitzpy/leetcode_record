@@ -2620,3 +2620,40 @@ private:
 };
 
 ```
+## 92. 反转链表 II
+```
+class Solution {
+public:
+    ListNode *solve(ListNode *head, ListNode *tail) {
+        ListNode *ret = tail->next;
+        ListNode *cur = head;
+        while (ret != tail) {
+            ListNode *temp = cur->next;
+            cur->next = ret;
+            ret = cur;
+            cur = temp;
+        }
+        return ret;
+    }
+
+    ListNode *reverseBetween(ListNode *head, int m, int n) {
+        ListNode *hair = new ListNode(0);
+        hair->next = head;
+        ListNode *cur = hair->next, *pre = hair, *tail = head;
+        int num = 0;
+        while (cur) {
+            num++;
+            if (num == m - 1) {
+                pre = cur;
+            }
+            if (num == n) {
+                tail = cur;
+            }
+            cur = cur->next;
+        }
+        solve(pre->next, tail);
+        pre->next = tail;
+        return hair->next;
+    }
+};
+```
