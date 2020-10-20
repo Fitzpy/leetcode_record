@@ -110,10 +110,10 @@ struct ListNode {
 
 class Solution {
 public:
-    ListNode *solve(ListNode *head, ListNode *tail) {
-        ListNode *ret = tail->next;
+    ListNode *solve(ListNode *head) {
+        ListNode *ret = NULL;
         ListNode *cur = head;
-        while (ret != tail) {
+        while (cur) {
             ListNode *temp = cur->next;
             cur->next = ret;
             ret = cur;
@@ -122,24 +122,37 @@ public:
         return ret;
     }
 
-    ListNode *reverseBetween(ListNode *head, int m, int n) {
-        ListNode *hair = new ListNode(0);
-        hair->next = head;
-        ListNode *cur = hair->next, *pre = hair, *tail = head;
+    void reorderList(ListNode *head) {
+        ListNode *cur = head;
         int num = 0;
         while (cur) {
             num++;
-            if (num == m - 1) {
-                pre = cur;
-            }
-            if (num == n) {
-                tail = cur;
-            }
             cur = cur->next;
         }
-        solve(pre->next, tail);
-        pre->next = tail;
-        return hair->next;
+        num = (num + 2) / 2 + 1;
+        cur = head;
+        ListNode *mid, *pre;
+        int pos = 0;
+        while (cur) {
+            pos++;
+            if (pos == num) {
+                pre->next = NULL;
+                mid = cur;
+                break;
+            }
+            pre = cur;
+            cur = cur->next;
+        }
+        mid = solve(mid);
+        cur = head;
+        while (mid) {
+            ListNode *temp1 = cur->next;
+            ListNode *temp2 = mid->next;
+            cur->next = mid;
+            mid->next = temp1;
+            cur = temp1;
+            mid = temp2;
+        }
     }
 };
 

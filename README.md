@@ -2657,3 +2657,54 @@ public:
     }
 };
 ```
+## 143. 重排链表
+```
+class Solution {
+public:
+    ListNode *solve(ListNode *head) {
+        ListNode *ret = NULL;
+        ListNode *cur = head;
+        while (cur) {
+            ListNode *temp = cur->next;
+            cur->next = ret;
+            ret = cur;
+            cur = temp;
+        }
+        return ret;
+    }
+
+    void reorderList(ListNode *head) {
+        ListNode *cur = head;
+        int num = 0;
+        while (cur) {
+            num++;
+            cur = cur->next;
+        }
+        num = (num + 2) / 2 + 1;
+        cur = head;
+        ListNode *mid, *pre;
+        int pos = 0;
+        while (cur) {
+            pos++;
+            if (pos == num) {
+                pre->next = NULL;
+                mid = cur;
+                break;
+            }
+            pre = cur;
+            cur = cur->next;
+        }
+        mid = solve(mid);
+        cur = head;
+        while (mid) {
+            ListNode *temp1 = cur->next;
+            ListNode *temp2 = mid->next;
+            cur->next = mid;
+            mid->next = temp1;
+            cur = temp1;
+            mid = temp2;
+        }
+    }
+};
+
+```
