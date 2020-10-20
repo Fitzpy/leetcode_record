@@ -2562,3 +2562,61 @@ public:
     }
 };
 ```
+## 622. 设计循环队列
+```
+class MyCircularQueue {
+public:
+    /** Initialize your data structure here. Set the size of the queue to be k. */
+    MyCircularQueue(int k) {
+        size = k;
+        head = tail = count = 0;
+        num.resize(k);
+    }
+
+    /** Insert an element into the circular queue. Return true if the operation is successful. */
+    bool enQueue(int value) {
+        if (count == size) return false;
+        count++;
+        num[tail] = value;
+        tail = (tail + 1) % size;
+        return true;
+    }
+
+    /** Delete an element from the circular queue. Return true if the operation is successful. */
+    bool deQueue() {
+        if (count == 0) return false;
+        head = (head + 1) % size;
+        count--;
+        return true;
+    }
+
+    /** Get the front item from the queue. */
+    int Front() {
+        if (count == 0) return -1;
+        return num[head];
+    }
+
+    /** Get the last item from the queue. */
+    int Rear() {
+        if (count == 0) return -1;
+        return num[(tail - 1 + size) % size];
+    }
+
+    /** Checks whether the circular queue is empty or not. */
+    bool isEmpty() {
+        if (count == 0) return true;
+        return false;
+    }
+
+    /** Checks whether the circular queue is full or not. */
+    bool isFull() {
+        if (count == size) return true;
+        return false;
+    }
+
+private:
+    int size, head, tail, count;
+    vector<int> num;
+};
+
+```
