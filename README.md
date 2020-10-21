@@ -926,7 +926,7 @@ public:
 ```
 //模板类作为友元时要先有声明
 template <typename T>
-class SmartPtr;
+class ~~SmartPtr~~;
 template <typename T>
 class U_Ptr     //辅助类
 {
