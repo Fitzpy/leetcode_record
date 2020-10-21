@@ -2737,3 +2737,43 @@ public:
     }
 };
 ```
+## 380. 常数时间插入、删除和获取随机元素
+```
+class RandomizedSet {
+public:
+    /** Initialize your data structure here. */
+    RandomizedSet() {
+        v.clear();
+        mp.clear();
+    }
+
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    bool insert(int val) {
+        if (mp.count(val)) return false;
+        v.push_back(val);
+        mp[val] = v.size() - 1;
+        return true;
+    }
+
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    bool remove(int val) {
+        if (!mp.count(val)) return false;
+        int idx = mp[val];
+        mp[v.back()] = idx;
+        swap(v[idx], v.back());
+        v.pop_back();
+        mp.erase(val);
+        return true;
+    }
+
+    /** Get a random element from the set. */
+    int getRandom() {
+        return v[rand() % (v.size())];
+    }
+
+private:
+    vector<int> v;
+    unordered_map<int, int> mp;
+};
+
+```
