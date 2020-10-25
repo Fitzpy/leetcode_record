@@ -2811,3 +2811,60 @@ public:
     }
 };
 ```
+## 剑指 Offer 33. 二叉搜索树的后序遍历序列
+```
+class Solution {
+public:
+    struct node {
+        int val;
+        node *lson, *rson;
+
+        node(int val) : val(val), lson(NULL), rson(NULL) {}
+    };
+
+    unordered_map<int, int> mp;
+
+    node *build(vector<int> &inorder, vector<int> &postorder, int L1, int R1, int L2, int R2) {
+        if (L1 > R1 || L2 > R2) return NULL;
+        int pos = mp[postorder[R2]];
+        if (pos > R1 || pos < L1) return NULL;
+        node *head = new node(postorder[R2]);
+        head->lson = build(inorder, postorder, L1, pos - 1, L2, L2 + pos - L1 - 1);
+        head->rson = build(inorder, postorder, pos + 1, R1, L2 + pos - L1, R2 - 1);
+        return head;
+    }
+
+    bool check(node *head) {
+        if (head == NULL) return true;
+        node *cur = head;
+        if (cur->lson) {
+            if (cur->lson->val > head->val) return false;
+        }
+        if (cur->rson) {
+            if (cur->rson->val < head->val) return false;
+        }
+        bool ret = (check(cur->lson) && check(cur->rson));
+        return ret;
+    }
+
+    int getNum(node *head) {
+        if (head == NULL) return 0;
+        return getNum(head->lson) + 1 + getNum(head->rson);
+    }
+
+    bool verifyPostorder(vector<int> &postorder) {
+        vector<int> inorder = postorder;
+        sort(inorder.begin(), inorder.end());
+        mp.clear();
+        int n = postorder.size();
+        for (int i = 0; i < n; i++) {
+            mp[inorder[i]] = i;
+        }
+        node *head = build(inorder, postorder, 0, n - 1, 0, n - 1);
+        int num = getNum(head);
+        if (num != n) return false;
+        return check(head);
+    }
+};
+
+```
